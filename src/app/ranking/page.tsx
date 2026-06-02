@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { type Game } from '@/lib/types'
 import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
 
@@ -38,8 +39,8 @@ export default async function RankingPage({
   const { data } = await query
   const games = (data ?? []).map((g: Record<string, unknown>) => ({
     ...g,
-    tags: ((g.game_tags as Array<{ tag: unknown }>) ?? []).map(gt => gt.tag),
-  }))
+    tags: ((g.game_tags as Array<{ tag: { id: string; name: string } }>) ?? []).map(gt => gt.tag),
+  } as unknown as Game))
 
   return (
     <div className="flex gap-6 p-6">

@@ -37,7 +37,7 @@ export default async function RankingSidebar() {
         ) : (
           <div className="space-y-3">
             {ranked.map((game, i) => {
-              const cat = game.category as { name: string; icon: string; slug: string } | null
+              const cat = game.category as unknown as { name: string; icon: string; slug: string } | null
               return (
                 <Link key={game.id} href={`/games/${game.id}`} className="flex gap-2 hover:bg-gray-50 rounded-lg p-1 -m-1">
                   <div className="w-10 h-10 bg-gray-100 rounded-lg shrink-0 flex items-center justify-center text-lg">

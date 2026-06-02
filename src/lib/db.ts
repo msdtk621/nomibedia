@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from './supabase-server'
+import { type Game } from './types'
 
 export async function getCategories() {
   const supabase = await createServerSupabaseClient()
@@ -35,7 +36,6 @@ export async function getGame(id: string) {
     .single()
   if (!data) return null
 
-  // increment view count
   await supabase.from('games').update({ view_count: (data.view_count ?? 0) + 1 }).eq('id', id)
 
   return normalizeGame(data)
@@ -61,9 +61,9 @@ export async function getRankedGames() {
   return (data ?? []).map(normalizeGame)
 }
 
-function normalizeGame(data: Record<string, unknown>) {
+function normalizeGame(data: Record<string, unknown>): Game {
   return {
     ...data,
-    tags: ((data.game_tags as Array<{ tag: unknown }>) ?? []).map((gt) => gt.tag),
-  }
+    tags: ((data.game_tags as Array<{ tag: { id: string; name: string } }>) ?? []).map((gt) => gt.tag),
+  } as unknown as Game
 }

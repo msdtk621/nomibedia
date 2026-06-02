@@ -14,10 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const game = await getGame(id)
   if (!game) return {}
   return {
-    title: `${game.title} | ノミペディア`,
-    description: game.description,
+    title: `${game.title as string} | ノミペディア`,
+    description: game.description as string,
     openGraph: {
-      title: `${game.title} | ノミペディア`,
+      title: `${game.title as string} | ノミペディア`,
       description: game.description as string,
       type: 'article',
     },
@@ -47,6 +47,9 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   const playerCount = game.player_count as string[] | null
   const gameFlow = game.game_flow as string[] | null
   const drinkLevel = (game.drink_level as number) ?? 1
+  const requiredItems = game.required_items as string | null
+  const loseCondition = game.lose_condition as string | null
+  const tips = game.tips as string | null
 
   return (
     <div className="flex gap-6 p-6">
@@ -128,10 +131,10 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        {game.required_items && (
+        {requiredItems && (
           <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
             <h2 className="font-bold text-gray-900 mb-2">必要なもの</h2>
-            <p className="text-gray-700">{game.required_items as string}</p>
+            <p className="text-gray-700">{requiredItems}</p>
           </div>
         )}
 
@@ -140,17 +143,17 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
           <div className="text-gray-700 whitespace-pre-line leading-relaxed">{game.rules as string}</div>
         </div>
 
-        {game.lose_condition && (
+        {loseCondition && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-4">
             <h2 className="font-bold text-red-800 mb-2">💀 負け条件</h2>
-            <p className="text-red-700">{game.lose_condition as string}</p>
+            <p className="text-red-700">{loseCondition}</p>
           </div>
         )}
 
-        {game.tips && (
+        {tips && (
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-4">
             <h2 className="font-bold text-amber-800 mb-2">💡 ポイント・コツ</h2>
-            <p className="text-amber-700">{game.tips as string}</p>
+            <p className="text-amber-700">{tips}</p>
           </div>
         )}
 
