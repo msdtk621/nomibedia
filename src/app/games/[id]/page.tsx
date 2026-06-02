@@ -2,6 +2,7 @@ import { getGame, getComments } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { getCategoryImage } from '@/lib/categoryImages'
 import RankingSidebar from '@/components/RankingSidebar'
 import CommentSection from '@/components/CommentSection'
 import LikeButton from '@/components/LikeButton'
@@ -68,18 +69,14 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
 
         <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
           <div className="flex gap-4">
-            <div className="w-24 h-24 bg-gray-100 rounded-xl shrink-0 flex items-center justify-center text-5xl overflow-hidden">
-              {game.thumbnail_url ? (
-                <Image
-                  src={game.thumbnail_url as string}
-                  alt={game.title as string}
-                  width={96}
-                  height={96}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                category?.icon ?? '🎮'
-              )}
+            <div className="w-24 h-24 bg-gray-100 rounded-xl shrink-0 overflow-hidden">
+              <Image
+                src={(game.thumbnail_url as string | null) ?? getCategoryImage(category?.slug)}
+                alt={game.title as string}
+                width={96}
+                height={96}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -160,8 +157,14 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
         <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4">
           <div className="flex items-center gap-4 flex-wrap">
             <LikeButton gameId={id} initialCount={game.like_count as number} />
-            <span className="flex items-center gap-1 text-gray-500 text-sm">💬 コメント {game.comment_count as number}</span>
-            <span className="flex items-center gap-1 text-gray-500 text-sm">👁 閲覧数 {(game.view_count as number).toLocaleString()}</span>
+            <span className="flex items-center gap-1 text-gray-500 text-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/comment.png" alt="コメント" className="w-4 h-4 object-contain" /> コメント {game.comment_count as number}
+            </span>
+            <span className="flex items-center gap-1 text-gray-500 text-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/eye.png" alt="閲覧" className="w-4 h-4 object-contain" /> 閲覧数 {(game.view_count as number).toLocaleString()}
+            </span>
             <div className="ml-auto"><ReportButton gameId={id} /></div>
           </div>
         </div>

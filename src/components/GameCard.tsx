@@ -1,23 +1,26 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Game } from '@/lib/types'
+import { getCategoryImage } from '@/lib/categoryImages'
+
+function Icon({ src, alt, size = 14 }: { src: string; alt: string; size?: number }) {
+  return <img src={src} alt={alt} width={size} height={size} className="object-contain inline-block" style={{ width: size, height: size }} />
+}
 
 export default function GameCard({ game }: { game: Game }) {
+  const thumbSrc = game.thumbnail_url ?? getCategoryImage(game.category?.slug)
+
   return (
     <Link href={`/games/${game.id}`} className="block bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
       <div className="flex gap-3">
-        <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 flex items-center justify-center text-3xl overflow-hidden">
-          {game.thumbnail_url ? (
-            <Image
-              src={game.thumbnail_url}
-              alt={game.title}
-              width={64}
-              height={64}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            game.category?.icon ?? '🎮'
-          )}
+        <div className="w-16 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
+          <Image
+            src={thumbSrc}
+            alt={game.title}
+            width={64}
+            height={64}
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -37,9 +40,9 @@ export default function GameCard({ game }: { game: Game }) {
         </div>
       </div>
       <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
-        <span>👍 {game.like_count}</span>
-        <span>💬 {game.comment_count}</span>
-        <span>👁 {game.view_count.toLocaleString()}</span>
+        <span className="flex items-center gap-1"><Icon src="/like.png" alt="いいね" /> {game.like_count}</span>
+        <span className="flex items-center gap-1"><Icon src="/comment.png" alt="コメント" /> {game.comment_count}</span>
+        <span className="flex items-center gap-1"><Icon src="/eye.png" alt="閲覧" /> {game.view_count.toLocaleString()}</span>
         <span className="ml-auto">{new Date(game.created_at).toLocaleDateString('ja-JP')}</span>
       </div>
     </Link>

@@ -7,7 +7,8 @@ export async function postGame(formData: FormData) {
   const supabase = await createServerSupabaseClient()
 
   const title = formData.get('title') as string
-  const categoryId = formData.get('category_id') as string
+  const categoryIds: string[] = JSON.parse((formData.get('category_ids') as string) || '[]')
+  const categoryId = categoryIds[0] ?? null
   const description = formData.get('description') as string
   const requiredItems = formData.get('required_items') as string
   const rules = formData.get('rules') as string
@@ -38,7 +39,8 @@ export async function postGame(formData: FormData) {
 
   const { data: game, error } = await supabase.from('games').insert({
     title,
-    category_id: categoryId || null,
+    category_id: categoryId,
+    category_ids: categoryIds,
     description,
     required_items: requiredItems || null,
     rules,

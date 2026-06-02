@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { postGame } from '@/app/actions/game'
+import { categoryImages } from '@/lib/categoryImages'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -26,6 +27,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
   const [playerCounts, setPlayerCounts] = useState<string[]>([])
   const [drinkLevel, setDrinkLevel] = useState(1)
   const [gameFlows, setGameFlows] = useState<string[]>([])
+  const [categoryIds, setCategoryIds] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -68,11 +70,11 @@ export default function PostForm({ categories }: { categories: Category[] }) {
         <p className="text-sm text-gray-500 mb-6">あなたの知っている楽しいゲームをみんなにシェアしましょう！</p>
 
         <form action={postGame} className="space-y-6">
-          {/* hidden fields for arrays */}
           <input type="hidden" name="player_count" value={JSON.stringify(playerCounts)} />
           <input type="hidden" name="game_flow" value={JSON.stringify(gameFlows)} />
           <input type="hidden" name="tags" value={tags.join(',')} />
           <input type="hidden" name="drink_level" value={drinkLevel} />
+          <input type="hidden" name="category_ids" value={JSON.stringify(categoryIds)} />
 
           {/* 1. 基本情報 */}
           <section>
@@ -90,13 +92,28 @@ export default function PostForm({ categories }: { categories: Category[] }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">カテゴリ</label>
-                <select name="category_id" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                  <option value="">カテゴリを選択してください</option>
-                  {categories.map(c => (
-                    <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
-                  ))}
-                </select>
+                <label className="block text-sm font-medium text-gray-700 mb-2">カテゴリ（複数選択可）</label>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map(c => {
+                    const img = categoryImages[c.slug]
+                    const selected = categoryIds.includes(c.id)
+                    return (
+                      <button
+                        key={c.id} type="button"
+                        onClick={() => setCategoryIds(prev => toggleArray(prev, c.id))}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                          selected ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
+                        }`}
+                      >
+                        {img
+                          ? <img src={img} alt={c.name} className="w-4 h-4 rounded object-cover" />
+                          : <span>{c.icon}</span>
+                        }
+                        {c.name}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
 
               <div>
