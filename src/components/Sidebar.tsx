@@ -5,11 +5,19 @@ import { usePathname } from 'next/navigation'
 type Category = { id: string; name: string; slug: string; icon: string }
 
 const navItems = [
-  { href: '/', label: 'トップ', icon: '🏠' },
-  { href: '/ranking', label: '人気ランキング', icon: '👑' },
-  { href: '/new', label: '新着ゲーム', icon: '🕐' },
+  { href: '/', label: 'トップ', img: '/home.jpeg' },
+  { href: '/ranking', label: '人気ランキング', img: '/crown.jpeg' },
+  { href: '/new', label: '新着ゲーム', img: '/clock.png' },
   { href: '/comments', label: 'コメント新着', icon: '💬' },
 ]
+
+const categoryImages: Record<string, string> = {
+  karaoke: '/mic.jpeg',
+  dice: '/dice.jpeg',
+  darts: '/darts.jpeg',
+  trump: '/cards.jpeg',
+  drinking: '/beer.jpeg',
+}
 
 const notices = [
   '・新機能「お気に入り登録」を追加しました！',
@@ -34,7 +42,12 @@ export default function Sidebar({ categories, onNavigate }: { categories: Catego
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <span>{item.icon}</span>
+            {'img' in item ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={item.img} alt={item.label} className="w-5 h-5 rounded object-cover" />
+            ) : (
+              <span>{item.icon}</span>
+            )}
             {item.label}
           </Link>
         ))}
@@ -53,7 +66,12 @@ export default function Sidebar({ categories, onNavigate }: { categories: Catego
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <span>{cat.icon}</span>
+            {categoryImages[cat.slug] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={categoryImages[cat.slug]} alt={cat.name} className="w-5 h-5 rounded object-cover" />
+            ) : (
+              <span>{cat.icon}</span>
+            )}
             {cat.name}
           </Link>
         ))}
