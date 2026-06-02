@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 import RankingSidebar from '@/components/RankingSidebar'
+import { getCategoryImage } from '@/lib/categoryImages'
 
 export const revalidate = 0
 
@@ -24,10 +25,11 @@ export default async function CommentsPage() {
   }, [])
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 p-3 md:p-6">
       <div className="flex-1 min-w-0">
         <div className="mb-6 flex items-center gap-2">
-          <span className="text-2xl">💬</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/comment.png" alt="コメント" className="w-8 h-8 object-contain" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">コメント新着</h1>
             <p className="text-gray-500 text-sm">最近コメントがついたゲーム</p>
@@ -36,20 +38,22 @@ export default async function CommentsPage() {
 
         {recentGames?.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
-            <div className="text-4xl mb-3">💬</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/comment.png" alt="コメント" className="w-10 h-10 object-contain mx-auto mb-3" />
             <p>まだコメントがありません</p>
           </div>
         ) : (
           <div className="space-y-3">
             {recentGames?.map((c) => {
-              const game = c.game as { id: string; title: string; category: { name: string; icon: string } | null } | null
+              const game = c.game as { id: string; title: string; category: { name: string; icon: string; slug: string } | null } | null
               if (!game) return null
               return (
                 <Link key={game.id} href={`/games/${game.id}`}
                   className="block bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
                   <div className="flex gap-3">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 flex items-center justify-center text-2xl">
-                      {game.category?.icon ?? '🎮'}
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={getCategoryImage(game.category?.slug)} alt={game.category?.name ?? ''} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-purple-600 mb-1">{game.category?.name}</div>

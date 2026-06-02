@@ -2,6 +2,7 @@ import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
 import { getGames, getCategories } from '@/lib/db'
 import Link from 'next/link'
+import { getCategoryImage } from '@/lib/categoryImages'
 
 export const revalidate = 0
 
@@ -17,7 +18,7 @@ export default async function Home({
   ])
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 p-3 md:p-6">
       <div className="flex-1 min-w-0">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">飲みゲー一覧</h1>
@@ -25,16 +26,20 @@ export default async function Home({
         </div>
 
         <div className="flex gap-2 mb-4 flex-wrap">
-          <Link href="/" className="px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
-            🎮 すべてのゲーム
+          <Link href="/" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/star.jpeg" alt="すべて" className="w-4 h-4 rounded object-cover" />
+            すべてのゲーム
           </Link>
           {categories.map((cat: { id: string; slug: string; icon: string; name: string }) => (
             <Link
               key={cat.id}
               href={`/category/${cat.slug}`}
-              className="px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-blue-400 hover:text-blue-600 transition-colors"
             >
-              {cat.icon} {cat.name}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={getCategoryImage(cat.slug)} alt={cat.name} className="w-4 h-4 rounded object-cover" />
+              {cat.name}
             </Link>
           ))}
         </div>
@@ -45,7 +50,8 @@ export default async function Home({
 
         {games.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
-            <div className="text-4xl mb-3">🍺</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/beer.jpeg" alt="ビール" className="w-10 h-10 rounded object-cover mx-auto mb-3" />
             <p>まだゲームが投稿されていません</p>
             <Link href="/post" className="mt-4 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
               最初に投稿する

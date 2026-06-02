@@ -16,7 +16,6 @@ function getPeriodStart(period: Period): string | null {
 }
 
 const periodLabels: Record<Period, string> = { '24h': '24時間', week: '週間', month: '月間', all: '全期間' }
-const rankIcons = ['👑', '🥈', '🥉']
 
 export default async function RankingPage({
   searchParams,
@@ -43,10 +42,11 @@ export default async function RankingPage({
   } as unknown as Game))
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 p-3 md:p-6">
       <div className="flex-1 min-w-0">
         <div className="mb-6 flex items-center gap-2">
-          <span className="text-2xl">👑</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/crown.jpeg" alt="ランキング" className="w-8 h-8 rounded object-cover" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">人気ランキング</h1>
             <p className="text-gray-500 text-sm">みんなが「いいね！」した飲みゲーランキング</p>
@@ -66,15 +66,16 @@ export default async function RankingPage({
 
         {games.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
-            <div className="text-4xl mb-3">👑</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/crown.jpeg" alt="ランキング" className="w-10 h-10 rounded object-cover mx-auto mb-3" />
             <p>この期間にゲームがありません</p>
           </div>
         ) : (
           <div className="space-y-3">
             {games.map((game, i) => (
               <div key={game.id as string} className="flex items-stretch gap-3">
-                <div className="w-8 flex items-center justify-center text-xl font-bold shrink-0 text-gray-400">
-                  {i < 3 ? rankIcons[i] : i + 1}
+                <div className="w-8 flex items-center justify-center text-lg font-bold shrink-0 text-gray-400">
+                  {i + 1}
                 </div>
                 <div className="flex-1">
                   <GameCard game={game as Parameters<typeof GameCard>[0]['game']} />

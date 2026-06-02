@@ -52,7 +52,8 @@ export default function LikeButton({ gameId, initialCount }: { gameId: string; i
           : 'text-gray-600 border-gray-300 hover:border-blue-400 hover:text-blue-600'
       }`}
     >
-      <span className="text-lg">{liked ? '👍' : '👍'}</span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/like.png" alt="いいね" className="w-5 h-5 object-contain" />
       いいね！ {count}
     </button>
   )

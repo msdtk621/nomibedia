@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getCategoryImage } from '@/lib/categoryImages'
 
-const rankIcons = ['👑', '🥈', '🥉', '4', '5']
 
 async function getTopGames() {
   const supabase = await createServerSupabaseClient()
@@ -26,7 +25,7 @@ export default async function RankingSidebar() {
   const displayTags = tags.length > 0 ? tags : fallbackTags
 
   return (
-    <aside className="w-64 shrink-0">
+    <aside className="hidden lg:block w-64 shrink-0">
       <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4">
         <div className="flex items-center gap-2 mb-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -57,7 +56,7 @@ export default async function RankingSidebar() {
                       <span className="flex items-center gap-0.5"><img src="/comment.png" alt="コメント" className="w-3 h-3 object-contain" />{game.comment_count}</span>
                     </div>
                   </div>
-                  <div className="text-lg shrink-0">{rankIcons[i]}</div>
+                  <div className="text-sm font-bold shrink-0 text-gray-400 w-5 text-center">{i + 1}</div>
                 </Link>
               )
             })}

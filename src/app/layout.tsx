@@ -10,6 +10,23 @@ const geist = Geist({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'ノミペディア - 飲みゲーをみんなでシェアするサイト',
   description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+  ),
+  openGraph: {
+    title: 'ノミペディア - 飲みゲーをみんなでシェアするサイト',
+    description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
+    type: 'website',
+    locale: 'ja_JP',
+    images: [{ url: '/logo.jpeg', width: 512, height: 512, alt: 'ノミペディア' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'ノミペディア',
+    description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
+    images: ['/logo.jpeg'],
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

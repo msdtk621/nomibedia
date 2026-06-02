@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 p-3 md:p-6">
       <div className="flex-1 min-w-0 space-y-3">
         {[...Array(5)].map((_, i) => (
           <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 animate-pulse">

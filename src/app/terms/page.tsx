@@ -44,6 +44,14 @@ export default function TermsPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-2">第6条（規約の変更）</h2>
           <p>当サイトは必要に応じて本規約を変更することができます。変更後は本ページに掲載します。</p>
         </section>
+
+        <section>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">第7条（お問い合わせ）</h2>
+          <p>本規約に関するお問い合わせは、下記メールアドレスまでご連絡ください。</p>
+          <p className="mt-2">
+            <a href="mailto:kippo.pokky@gmail.com" className="text-blue-600 hover:underline">kippo.pokky@gmail.com</a>
+          </p>
+        </section>
       </div>
     </div>
   )

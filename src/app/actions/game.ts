@@ -20,7 +20,7 @@ export async function postGame(formData: FormData) {
   const gameFlow = JSON.parse((formData.get('game_flow') as string) || '[]')
   const imageFile = formData.get('image') as File | null
 
-  const authorId = Math.random().toString(36).slice(2, 10)
+  const authorId = (formData.get('author_id') as string) || Math.random().toString(36).slice(2, 10)
 
   let thumbnailUrl: string | null = null
   if (imageFile && imageFile.size > 0) {
@@ -70,4 +70,61 @@ export async function postGame(formData: FormData) {
   }
 
   redirect(`/games/${game.id}`)
+}
+
+export async function deleteGame(gameId: string, authorId: string) {
+  const supabase = await createServerSupabaseClient()
+  const { data: game } = await supabase.from('games').select('author_id').eq('id', gameId).single()
+  if (!game || game.author_id !== authorId) throw new Error('削除権限がありません')
+  await supabase.from('games').delete().eq('id', gameId)
+  redirect('/')
+}
+
+export async function updateGame(gameId: string, authorId: string, formData: FormData) {
+  const supabase = await createServerSupabaseClient()
+  const { data: game } = await supabase.from('games').select('author_id').eq('id', gameId).single()
+  if (!game || game.author_id !== authorId) throw new Error('編集権限がありません')
+
+  const title = formData.get('title') as string
+  const categoryIds: string[] = JSON.parse((formData.get('category_ids') as string) || '[]')
+  const description = formData.get('description') as string
+  const requiredItems = formData.get('required_items') as string
+  const rules = formData.get('rules') as string
+  const tips = formData.get('tips') as string
+  const loseCondition = formData.get('lose_condition') as string
+  const tagsRaw = formData.get('tags') as string
+  const drinkLevel = parseInt(formData.get('drink_level') as string) || 1
+  const playerCount = JSON.parse((formData.get('player_count') as string) || '[]')
+  const gameFlow = JSON.parse((formData.get('game_flow') as string) || '[]')
+
+  await supabase.from('games').update({
+    title,
+    category_id: categoryIds[0] ?? null,
+    category_ids: categoryIds,
+    description,
+    required_items: requiredItems || null,
+    rules,
+    tips: tips || null,
+    lose_condition: loseCondition || null,
+    drink_level: drinkLevel,
+    player_count: playerCount,
+    game_flow: gameFlow,
+  }).eq('id', gameId)
+
+  if (tagsRaw !== null) {
+    await supabase.from('game_tags').delete().eq('game_id', gameId)
+    const tagNames = tagsRaw.split(',').map((t: string) => t.trim()).filter(Boolean).slice(0, 10)
+    for (const name of tagNames) {
+      const { data: tag } = await supabase
+        .from('tags')
+        .upsert({ name }, { onConflict: 'name' })
+        .select()
+        .single()
+      if (tag) {
+        await supabase.from('game_tags').insert({ game_id: gameId, tag_id: tag.id })
+      }
+    }
+  }
+
+  redirect(`/games/${gameId}`)
 }

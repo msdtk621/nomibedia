@@ -18,7 +18,12 @@ const GAME_FLOWS = [
   '指定された人に順番が飛ぶ',
 ]
 
+function generateAuthorId() {
+  return Math.random().toString(36).slice(2, 10)
+}
+
 export default function PostForm({ categories }: { categories: Category[] }) {
+  const [authorId] = useState(() => generateAuthorId())
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [rules, setRules] = useState('')
@@ -69,7 +74,17 @@ export default function PostForm({ categories }: { categories: Category[] }) {
         <h1 className="text-xl font-bold text-gray-900 mb-1">ゲームを投稿する</h1>
         <p className="text-sm text-gray-500 mb-6">あなたの知っている楽しいゲームをみんなにシェアしましょう！</p>
 
-        <form action={postGame} className="space-y-6">
+        <form
+          action={postGame}
+          onSubmit={() => {
+            const ids = JSON.parse(localStorage.getItem('nomipedia_my_author_ids') || '[]')
+            if (!ids.includes(authorId)) {
+              localStorage.setItem('nomipedia_my_author_ids', JSON.stringify([...ids, authorId]))
+            }
+          }}
+          className="space-y-6"
+        >
+          <input type="hidden" name="author_id" value={authorId} />
           <input type="hidden" name="player_count" value={JSON.stringify(playerCounts)} />
           <input type="hidden" name="game_flow" value={JSON.stringify(gameFlows)} />
           <input type="hidden" name="tags" value={tags.join(',')} />
@@ -175,9 +190,9 @@ export default function PostForm({ categories }: { categories: Category[] }) {
                     <button
                       key={n} type="button"
                       onClick={() => setDrinkLevel(n)}
-                      className={`text-2xl transition-opacity ${n <= drinkLevel ? 'opacity-100' : 'opacity-25'}`}
+                      className={`transition-opacity ${n <= drinkLevel ? 'opacity-100' : 'opacity-25'}`}
                     >
-                      🍺
+                      <img src="/beer.jpeg" alt="ビール" className="w-8 h-8 rounded object-cover" />
                     </button>
                   ))}
                   <span className="ml-2 text-sm text-gray-500">

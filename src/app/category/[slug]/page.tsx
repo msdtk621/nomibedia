@@ -16,7 +16,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   if (!category) notFound()
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 p-3 md:p-6">
       <div className="flex-1 min-w-0">
         <div className="mb-6 flex items-center gap-3">
           <span className="text-3xl">{(category as { icon: string }).icon}</span>

@@ -7,6 +7,7 @@ import RankingSidebar from '@/components/RankingSidebar'
 import CommentSection from '@/components/CommentSection'
 import LikeButton from '@/components/LikeButton'
 import ReportButton from '@/components/ReportButton'
+import OwnerActions from '@/components/OwnerActions'
 
 export const revalidate = 0
 
@@ -29,7 +30,8 @@ function DrinkLevel({ level }: { level: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1,2,3,4,5].map(n => (
-        <span key={n} className={n <= level ? 'opacity-100' : 'opacity-20'}>🍺</span>
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={n} src="/beer.jpeg" alt="ビール" className={`w-5 h-5 rounded object-cover ${n <= level ? 'opacity-100' : 'opacity-20'}`} />
       ))}
     </div>
   )
@@ -53,7 +55,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   const tips = game.tips as string | null
 
   return (
-    <div className="flex gap-6 p-6">
+    <div className="flex gap-6 p-3 md:p-6">
       <div className="flex-1 min-w-0">
         <nav className="text-sm text-gray-500 mb-4 flex items-center gap-1">
           <Link href="/" className="hover:text-blue-600">トップ</Link>
@@ -105,7 +107,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
             </div>
           </div>
 
-          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500">
+          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 text-sm text-gray-500 flex-wrap">
             <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-xs">👤</div>
             <span>匿名（ID: {game.author_id as string}）</span>
             <span className="ml-2">
@@ -114,6 +116,9 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
                 hour: '2-digit', minute: '2-digit'
               })}
             </span>
+            <div className="ml-auto">
+              <OwnerActions gameId={id} authorId={game.author_id as string} />
+            </div>
           </div>
         </div>
 

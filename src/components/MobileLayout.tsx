@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Header from './Header'
 import Sidebar from './Sidebar'
 
@@ -8,11 +9,11 @@ type Category = { id: string; name: string; slug: string; icon: string }
 
 export default function MobileLayout({ categories, children }: { categories: Category[]; children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
 
-  // ルート変更時にメニューを閉じる
   useEffect(() => {
     setMenuOpen(false)
-  }, [])
+  }, [pathname])
 
   return (
     <>

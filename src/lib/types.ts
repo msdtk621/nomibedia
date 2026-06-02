@@ -20,6 +20,7 @@ export type Game = {
   required_items?: string | null
   lose_condition?: string | null
   category_id?: string | null
+  category_ids?: string[] | null
   category?: { name: string; icon: string; slug: string } | null
   tags: Tag[]
   thumbnail_url?: string | null

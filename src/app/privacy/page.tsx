@@ -48,7 +48,10 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-2">7. お問い合わせ</h2>
-          <p>本ポリシーに関するお問い合わせは、サイト内のお問い合わせフォームよりご連絡ください。</p>
+          <p>本ポリシーに関するお問い合わせは、下記メールアドレスまでご連絡ください。</p>
+          <p className="mt-2">
+            <a href="mailto:kippo.pokky@gmail.com" className="text-blue-600 hover:underline">kippo.pokky@gmail.com</a>
+          </p>
         </section>
       </div>
     </div>
