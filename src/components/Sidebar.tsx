@@ -10,6 +10,7 @@ const navItems = [
   { href: '/ranking', label: '人気ランキング', img: '/crown.jpeg' },
   { href: '/new', label: '新着ゲーム', img: '/clock.png' },
   { href: '/comments', label: 'コメント新着', img: '/comment.png' },
+  { href: '/board-games', label: 'ボードゲーム投票', img: '/star.jpeg' },
 ]
 
 const notices = [
