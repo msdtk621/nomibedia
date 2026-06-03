@@ -96,7 +96,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
             id: s.id,
             text: s.text,
             mediaType: s.mediaType,
-            emojiSequence: s.emojiSequence,
+            emojiCanvas: s.emojiCanvas,
           })))} />
 
           {/* 1. 基本情報 */}

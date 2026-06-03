@@ -54,7 +54,8 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   const loseCondition = game.lose_condition as string | null
   const tips = game.tips as string | null
   const referenceUrl = game.reference_url as string | null
-  const ruleSections = game.rule_sections as Array<{id: string; text: string; mediaType: string; emojiSequence?: string[]; imageUrl?: string}> | null
+  type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number }
+  const ruleSections = game.rule_sections as Array<{id: string; text: string; mediaType: string; emojiCanvas?: EmojiItem[]; imageUrl?: string}> | null
 
   return (
     <div className="flex gap-6 p-3 md:p-6">
@@ -153,10 +154,16 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
                   </div>
                   <div className="flex-1">
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{section.text}</p>
-                    {section.mediaType === 'emoji' && section.emojiSequence && section.emojiSequence.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2 p-2 bg-gray-50 rounded-lg">
-                        {section.emojiSequence.map((e, j) => (
-                          <span key={j} className="text-2xl">{e}</span>
+                    {section.mediaType === 'emoji' && section.emojiCanvas && section.emojiCanvas.length > 0 && (
+                      <div className="relative mt-2 bg-gray-50 rounded-lg" style={{ height: 160 }}>
+                        {section.emojiCanvas.map((item) => (
+                          <span
+                            key={item.id}
+                            className="absolute leading-none select-none"
+                            style={{ left: item.x, top: item.y, fontSize: item.size }}
+                          >
+                            {item.emoji}
+                          </span>
                         ))}
                       </div>
                     )}

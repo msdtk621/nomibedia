@@ -4,13 +4,15 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import EmojiPicker from './EmojiPicker'
 
+export type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number }
+
 export type RuleSection = {
   id: string
   text: string
   mediaType: 'none' | 'image' | 'emoji'
   imageFile?: File | null
   imagePreview?: string | null
-  emojiSequence: string[]
+  emojiCanvas: EmojiItem[]
 }
 
 export function createRuleSection(): RuleSection {
@@ -20,7 +22,7 @@ export function createRuleSection(): RuleSection {
     mediaType: 'none',
     imageFile: null,
     imagePreview: null,
-    emojiSequence: [],
+    emojiCanvas: [],
   }
 }
 
@@ -134,12 +136,12 @@ export default function RuleSectionEditor({
           {section.mediaType === 'emoji' && (
             <div className="mt-2">
               <EmojiPicker
-                selected={section.emojiSequence}
-                onChange={emojis => update(section.id, { emojiSequence: emojis })}
+                items={section.emojiCanvas}
+                onChange={items => update(section.id, { emojiCanvas: items })}
               />
               <button
                 type="button"
-                onClick={() => update(section.id, { mediaType: 'none', emojiSequence: [] })}
+                onClick={() => update(section.id, { mediaType: 'none', emojiCanvas: [] })}
                 className="text-xs text-gray-400 hover:text-gray-600 mt-1"
               >
                 キャンセル
