@@ -1,5 +1,6 @@
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
 import Link from 'next/link'
+import ReportActions from '@/components/ReportActions'
 
 export const revalidate = 0
 export const metadata = { title: '通報一覧（管理） | ノミベディア' }
@@ -49,7 +50,7 @@ export default async function AdminReportsPage({
       ) : (
         <div className="space-y-3">
           {list.map((r) => (
-            <div key={r.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-3">
+            <div key={r.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-3 flex-wrap">
               <span className="text-xs bg-red-50 text-red-600 px-2 py-1 rounded-full font-medium shrink-0 mt-0.5">
                 {r.reason}
               </span>
@@ -65,6 +66,7 @@ export default async function AdminReportsPage({
                   {new Date(r.created_at).toLocaleString('ja-JP')}
                 </div>
               </div>
+              <ReportActions reportId={r.id} gameId={r.game?.id ?? null} adminKey={key} />
             </div>
           ))}
         </div>
