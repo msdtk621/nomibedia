@@ -8,8 +8,20 @@ function Icon({ src, alt, size = 14 }: { src: string; alt: string; size?: number
   return <img src={asset(src)} alt={alt} width={size} height={size} className="object-contain inline-block" style={{ width: size, height: size }} />
 }
 
+function DrinkLevel({ level }: { level: number }) {
+  return (
+    <span className="flex items-center gap-0.5" title={`酔い度 ${level}/5`}>
+      {[1, 2, 3, 4, 5].map(n => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={n} src={asset('/beer.jpeg')} alt="" className={`w-3.5 h-3.5 rounded object-cover ${n <= level ? 'opacity-100' : 'opacity-20'}`} />
+      ))}
+    </span>
+  )
+}
+
 export default function GameCard({ game }: { game: Game }) {
   const thumbSrc = game.thumbnail_url ?? getCategoryImage(game.category?.slug)
+  const drinkLevel = game.drink_level ?? 1
 
   return (
     <Link href={`/games/${game.id}`} className="block bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
@@ -24,12 +36,13 @@ export default function GameCard({ game }: { game: Game }) {
           />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             {game.category && (
               <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
                 {game.category.name}
               </span>
             )}
+            <DrinkLevel level={drinkLevel} />
           </div>
           <h3 className="font-bold text-gray-900 mb-1 truncate">{game.title}</h3>
           <p className="text-sm text-gray-600 line-clamp-2">{game.description}</p>

@@ -73,16 +73,17 @@ export default async function RankingPage({
           </div>
         ) : (
           <div className="space-y-3">
-            {games.map((game, i) => (
-              <div key={game.id as string} className="flex items-stretch gap-3">
-                <div className="w-8 flex items-center justify-center text-lg font-bold shrink-0 text-gray-400">
-                  {i + 1}
-                </div>
-                <div className="flex-1">
+            {games.map((game, i) => {
+              const rankColor = i === 0 ? 'bg-yellow-400' : i === 1 ? 'bg-gray-400' : i === 2 ? 'bg-amber-600' : 'bg-gray-300'
+              return (
+                <div key={game.id as string} className="relative">
+                  <div className={`absolute -left-2 -top-2 z-10 w-7 h-7 rounded-full ${rankColor} text-white text-sm font-bold flex items-center justify-center shadow-md`}>
+                    {i + 1}
+                  </div>
                   <GameCard game={game as Parameters<typeof GameCard>[0]['game']} />
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
