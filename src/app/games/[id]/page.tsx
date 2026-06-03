@@ -54,6 +54,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   const loseCondition = game.lose_condition as string | null
   const tips = game.tips as string | null
   const referenceUrl = game.reference_url as string | null
+  const ruleSections = game.rule_sections as Array<{id: string; text: string; mediaType: string; emojiSequence?: string[]; imageUrl?: string}> | null
 
   return (
     <div className="flex gap-6 p-3 md:p-6">
@@ -143,7 +144,32 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
 
         <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
           <h2 className="font-bold text-gray-900 mb-3">ルール</h2>
-          <div className="text-gray-700 whitespace-pre-line leading-relaxed">{game.rules as string}</div>
+          {ruleSections && ruleSections.length > 0 ? (
+            <div className="space-y-4">
+              {ruleSections.map((section, i) => (
+                <div key={section.id ?? i} className="flex gap-3">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    {i + 1}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-line">{section.text}</p>
+                    {section.mediaType === 'emoji' && section.emojiSequence && section.emojiSequence.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2 p-2 bg-gray-50 rounded-lg">
+                        {section.emojiSequence.map((e, j) => (
+                          <span key={j} className="text-2xl">{e}</span>
+                        ))}
+                      </div>
+                    )}
+                    {section.mediaType === 'image' && section.imageUrl && (
+                      <img src={section.imageUrl} alt="" className="mt-2 rounded-lg max-h-48 object-cover" />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-700 whitespace-pre-line leading-relaxed">{game.rules as string}</div>
+          )}
         </div>
 
         {loseCondition && (

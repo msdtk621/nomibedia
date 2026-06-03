@@ -20,6 +20,8 @@ export async function postGame(formData: FormData) {
   const gameFlow = JSON.parse((formData.get('game_flow') as string) || '[]')
   const imageFile = formData.get('image') as File | null
   const referenceUrl = (formData.get('reference_url') as string) || null
+  const ruleSectionsRaw = formData.get('rule_sections') as string | null
+  const ruleSections = ruleSectionsRaw ? JSON.parse(ruleSectionsRaw) : null
 
   const authorId = (formData.get('author_id') as string) || Math.random().toString(36).slice(2, 10)
 
@@ -53,6 +55,7 @@ export async function postGame(formData: FormData) {
     game_flow: gameFlow,
     thumbnail_url: thumbnailUrl,
     reference_url: referenceUrl,
+    rule_sections: ruleSections,
   }).select().single()
 
   if (error || !game) throw new Error('投稿に失敗しました')

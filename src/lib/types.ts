@@ -25,6 +25,7 @@ export type Game = {
   tags: Tag[]
   thumbnail_url?: string | null
   reference_url?: string | null
+  rule_sections?: Array<{id: string; text: string; mediaType: string; emojiSequence?: string[]; imageUrl?: string}> | null
   author_id: string
   author_name?: string | null
   drink_level?: number

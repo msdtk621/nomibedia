@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { postGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
+import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -27,6 +28,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [rules, setRules] = useState('')
+  const [ruleSections, setRuleSections] = useState<RuleSection[]>([createRuleSection()])
   const [tips, setTips] = useState('')
   const [loseCondition, setLoseCondition] = useState('')
   const [playerCounts, setPlayerCounts] = useState<string[]>([])
@@ -90,6 +92,12 @@ export default function PostForm({ categories }: { categories: Category[] }) {
           <input type="hidden" name="tags" value={tags.join(',')} />
           <input type="hidden" name="drink_level" value={drinkLevel} />
           <input type="hidden" name="category_ids" value={JSON.stringify(categoryIds)} />
+          <input type="hidden" name="rule_sections" value={JSON.stringify(ruleSections.map(s => ({
+            id: s.id,
+            text: s.text,
+            mediaType: s.mediaType,
+            emojiSequence: s.emojiSequence,
+          })))} />
 
           {/* 1. 基本情報 */}
           <section>
@@ -300,14 +308,11 @@ export default function PostForm({ categories }: { categories: Category[] }) {
             <h2 className="font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">3. 遊び方・ルール</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">遊び方・ルール <span className="text-red-500">*</span></label>
-                <textarea
-                  name="rules" required maxLength={1000} rows={8}
-                  value={rules} onChange={e => setRules(e.target.value)}
-                  placeholder="ゲームの遊び方を詳しく説明してください"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
-                />
-                <div className="text-xs text-gray-400 text-right mt-1">{rules.length}/1000</div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">遊び方・ルール <span className="text-red-500">*</span></label>
+                <p className="text-xs text-gray-400 mb-3">ステップごとに分けて説明できます。各ステップに画像や絵文字で状況説明を追加できます。</p>
+                <RuleSectionEditor sections={ruleSections} onChange={setRuleSections} />
+                {/* 後方互換: 旧rulesフィールドも送信 */}
+                <input type="hidden" name="rules" value={ruleSections.map(s => s.text).filter(Boolean).join('\n\n')} />
               </div>
 
               <div>
