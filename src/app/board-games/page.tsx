@@ -14,7 +14,7 @@ export default async function BoardGamesPage() {
       <div className="flex-1 min-w-0">
         <div className="mb-6 flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/IMG_3274.PNG" alt="ボードゲーム" className="w-8 h-8 object-contain" />
+          <img src="/boardgame.png" alt="ボードゲーム" className="w-8 h-8 object-contain" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">飲み屋おすすめボードゲーム</h1>
             <p className="text-gray-500 text-sm">みんなの投票で決まるランキング！いいと思ったゲームに投票しよう</p>
