@@ -15,13 +15,9 @@ const navItems = [
   { href: '/favorites', label: 'お気に入り', img: '/star.jpeg' },
 ]
 
-const notices = [
-  '・新機能「お気に入り登録」を追加しました！',
-  '・ランキングの集計方法を調整しました',
-  '・不適切な投稿は運営により削除されます',
-]
+type Notice = { id: string; content: string; created_at: string }
 
-export default function Sidebar({ categories, onNavigate }: { categories: Category[]; onNavigate?: () => void }) {
+export default function Sidebar({ categories, notices = [], onNavigate }: { categories: Category[]; notices?: Notice[]; onNavigate?: () => void }) {
   const pathname = usePathname()
 
   return (
@@ -69,12 +65,14 @@ export default function Sidebar({ categories, onNavigate }: { categories: Catego
         ))}
       </div>
 
-      <div className="mt-4 mx-3 p-3 bg-gray-50 rounded-lg">
-        <div className="text-xs font-semibold text-gray-500 mb-2">お知らせ</div>
-        {notices.map((n, i) => (
-          <p key={i} className="text-xs text-gray-600 mb-1 leading-relaxed">{n}</p>
-        ))}
-      </div>
+      {notices.length > 0 && (
+        <div className="mt-4 mx-3 p-3 bg-gray-50 rounded-lg">
+          <div className="text-xs font-semibold text-gray-500 mb-2">お知らせ</div>
+          {notices.map((n) => (
+            <p key={n.id} className="text-xs text-gray-600 mb-1 leading-relaxed">・{n.content}</p>
+          ))}
+        </div>
+      )}
     </aside>
   )
 }

@@ -57,7 +57,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   const loseCondition = game.lose_condition as string | null
   const tips = game.tips as string | null
   const referenceUrl = game.reference_url as string | null
-  type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number }
+  type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number; rotation?: number }
   const ruleSections = game.rule_sections as Array<{id: string; text: string; mediaType: string; emojiCanvas?: EmojiItem[]; imageUrl?: string}> | null
 
   return (
@@ -161,7 +161,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
                           <span
                             key={item.id}
                             className="absolute leading-none select-none"
-                            style={{ left: item.x, top: item.y, fontSize: item.size }}
+                            style={{ left: item.x, top: item.y, fontSize: item.size, transform: `rotate(${item.rotation ?? 0}deg)` }}
                           >
                             {item.emoji}
                           </span>

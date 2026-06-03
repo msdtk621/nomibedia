@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import EmojiPicker from './EmojiPicker'
 
-export type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number }
+export type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number; rotation?: number }
 
 export type RuleSection = {
   id: string

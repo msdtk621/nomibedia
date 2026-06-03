@@ -3,7 +3,7 @@ import { Geist } from 'next/font/google'
 import './globals.css'
 import MobileLayout from '@/components/MobileLayout'
 import Footer from '@/components/Footer'
-import { getCategories } from '@/lib/db'
+import { getCategories, getNotices } from '@/lib/db'
 import { asset } from '@/lib/asset'
 
 const geist = Geist({ subsets: ['latin'] })
@@ -32,12 +32,12 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const categories = await getCategories()
+  const [categories, notices] = await Promise.all([getCategories(), getNotices().catch(() => [])])
 
   return (
     <html lang="ja">
       <body className={`${geist.className} bg-gray-50`}>
-        <MobileLayout categories={categories}>
+        <MobileLayout categories={categories} notices={notices}>
           {children}
           <Footer />
         </MobileLayout>

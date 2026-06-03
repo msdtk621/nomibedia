@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 
-type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number }
+type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number; rotation?: number }
 
 const EMOJI_CATEGORIES: Record<string, string[]> = {
   'にこにこ顔': ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','🫠','😉','😊','😇','🥰','😍','🤩','😘','😗','☺️','😚','😙','🥲','😋','😛','😜','🤪','😝','🤗','🤭','🫢','🤫','😌','😎','🥸','🤓','🧐'],
@@ -24,27 +24,45 @@ export default function EmojiCanvas({
 }) {
   const [activeCategory, setActiveCategory] = useState(Object.keys(EMOJI_CATEGORIES)[0])
   const [dragId, setDragId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedSize, setSelectedSize] = useState(36)
   const canvasRef = useRef<HTMLDivElement>(null)
   const dragOffset = useRef({ x: 0, y: 0 })
+
+  const updateSelected = (patch: Partial<EmojiItem>) => {
+    if (!selectedId) return
+    onChange(items.map(i => i.id === selectedId ? { ...i, ...patch } : i))
+  }
+
+  const rotateSelected = (delta: number) => {
+    if (!selectedId) return
+    onChange(items.map(i => i.id === selectedId ? { ...i, rotation: (((i.rotation ?? 0) + delta) % 360 + 360) % 360 } : i))
+  }
 
   const addEmoji = (emoji: string) => {
     const canvas = canvasRef.current
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
+    const id = Math.random().toString(36).slice(2)
     onChange([...items, {
-      id: Math.random().toString(36).slice(2),
+      id,
       emoji,
       x: Math.random() * (rect.width - 60) + 10,
       y: Math.random() * (200 - 60) + 10,
       size: selectedSize,
+      rotation: 0,
     }])
+    setSelectedId(id)
   }
 
-  const removeEmoji = (id: string) => onChange(items.filter(i => i.id !== id))
+  const removeEmoji = (id: string) => {
+    onChange(items.filter(i => i.id !== id))
+    if (selectedId === id) setSelectedId(null)
+  }
 
   const onMouseDown = useCallback((e: React.MouseEvent, id: string) => {
     e.preventDefault()
+    setSelectedId(id)
     const item = items.find(i => i.id === id)
     if (!item || !canvasRef.current) return
     const rect = canvasRef.current.getBoundingClientRect()
@@ -61,6 +79,7 @@ export default function EmojiCanvas({
   }, [dragId, items, onChange])
 
   const onTouchStart = useCallback((e: React.TouchEvent, id: string) => {
+    setSelectedId(id)
     const item = items.find(i => i.id === id)
     if (!item || !canvasRef.current) return
     const rect = canvasRef.current.getBoundingClientRect()
@@ -91,6 +110,7 @@ export default function EmojiCanvas({
         onMouseMove={onMouseMove}
         onMouseUp={stopDrag}
         onMouseLeave={stopDrag}
+        onMouseDown={e => { if (e.target === e.currentTarget) setSelectedId(null) }}
       >
         {items.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
@@ -100,14 +120,14 @@ export default function EmojiCanvas({
         {items.map(item => (
           <div
             key={item.id}
-            className="absolute cursor-grab active:cursor-grabbing"
-            style={{ left: item.x, top: item.y, fontSize: item.size, lineHeight: 1 }}
+            className={`absolute cursor-grab active:cursor-grabbing rounded ${selectedId === item.id ? 'ring-2 ring-blue-400' : ''}`}
+            style={{ left: item.x, top: item.y, fontSize: item.size, lineHeight: 1, transform: `rotate(${item.rotation ?? 0}deg)` }}
             onMouseDown={e => onMouseDown(e, item.id)}
             onTouchStart={e => onTouchStart(e, item.id)}
             onTouchMove={onTouchMove}
             onTouchEnd={stopDrag}
             onDoubleClick={() => removeEmoji(item.id)}
-            title="ダブルクリックで削除"
+            title="タップで選択・ダブルクリックで削除"
           >
             {item.emoji}
           </div>
@@ -123,21 +143,39 @@ export default function EmojiCanvas({
         )}
       </div>
 
-      {/* サイズ・操作ヒント */}
-      <div className="flex items-center gap-3 px-3 py-1.5 bg-white border-t border-gray-100 text-xs text-gray-500">
-        <span>サイズ:</span>
-        {[24, 36, 48, 64].map(s => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => setSelectedSize(s)}
-            className={`px-2 py-0.5 rounded ${selectedSize === s ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
-          >
-            {s === 24 ? '小' : s === 36 ? '中' : s === 48 ? '大' : '特大'}
-          </button>
-        ))}
-        <span className="ml-auto text-gray-400">ダブルタップで削除</span>
-      </div>
+      {/* 操作バー */}
+      {selectedId ? (
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 border-t border-blue-100 text-xs text-gray-600 flex-wrap">
+          <span className="text-blue-600 font-medium">選択中</span>
+          <span className="ml-1">回転:</span>
+          <button type="button" onClick={() => rotateSelected(-15)} className="px-2 py-0.5 rounded bg-white border border-gray-200 hover:bg-gray-100">↺ 左</button>
+          <button type="button" onClick={() => rotateSelected(15)} className="px-2 py-0.5 rounded bg-white border border-gray-200 hover:bg-gray-100">↻ 右</button>
+          <span className="ml-1">サイズ:</span>
+          {[24, 36, 48, 64].map(s => (
+            <button key={s} type="button" onClick={() => updateSelected({ size: s })}
+              className="px-2 py-0.5 rounded bg-white border border-gray-200 hover:bg-gray-100">
+              {s === 24 ? '小' : s === 36 ? '中' : s === 48 ? '大' : '特大'}
+            </button>
+          ))}
+          <button type="button" onClick={() => removeEmoji(selectedId)} className="px-2 py-0.5 rounded text-red-500 border border-red-200 hover:bg-red-50">削除</button>
+          <button type="button" onClick={() => setSelectedId(null)} className="ml-auto px-2 py-0.5 rounded bg-gray-100 hover:bg-gray-200">完了</button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 px-3 py-1.5 bg-white border-t border-gray-100 text-xs text-gray-500">
+          <span>新規サイズ:</span>
+          {[24, 36, 48, 64].map(s => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setSelectedSize(s)}
+              className={`px-2 py-0.5 rounded ${selectedSize === s ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+            >
+              {s === 24 ? '小' : s === 36 ? '中' : s === 48 ? '大' : '特大'}
+            </button>
+          ))}
+          <span className="ml-auto text-gray-400">絵文字をタップで回転・削除</span>
+        </div>
+      )}
 
       {/* カテゴリタブ */}
       <div className="flex overflow-x-auto bg-white border-t border-gray-100">

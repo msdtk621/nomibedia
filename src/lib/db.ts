@@ -7,6 +7,16 @@ export async function getCategories() {
   return data ?? []
 }
 
+export async function getNotices() {
+  const supabase = await createServerSupabaseClient()
+  const { data } = await supabase
+    .from('notices')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(5)
+  return (data ?? []) as Array<{ id: string; content: string; created_at: string }>
+}
+
 export async function getGames({ categorySlug, tag, q }: { categorySlug?: string; tag?: string; q?: string } = {}) {
   const supabase = await createServerSupabaseClient()
   let query = supabase

@@ -6,8 +6,9 @@ import Header from './Header'
 import Sidebar from './Sidebar'
 
 type Category = { id: string; name: string; slug: string; icon: string }
+type Notice = { id: string; content: string; created_at: string }
 
-export default function MobileLayout({ categories, children }: { categories: Category[]; children: React.ReactNode }) {
+export default function MobileLayout({ categories, notices, children }: { categories: Category[]; notices: Notice[]; children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
 
@@ -34,7 +35,7 @@ export default function MobileLayout({ categories, children }: { categories: Cat
           md:translate-x-0 md:block
           ${menuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}>
-          <Sidebar categories={categories} onNavigate={() => setMenuOpen(false)} />
+          <Sidebar categories={categories} notices={notices} onNavigate={() => setMenuOpen(false)} />
         </div>
 
         <main className="md:ml-52 flex-1 min-h-screen w-full">

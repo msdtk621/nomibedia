@@ -28,3 +28,19 @@ export async function deleteGameAsAdmin(gameId: string, key: string) {
   await admin.from('games').delete().eq('id', gameId)
   revalidatePath('/admin/reports')
 }
+
+// お知らせを追加
+export async function addNotice(content: string, key: string) {
+  verify(key)
+  const admin = createAdminSupabaseClient()
+  await admin.from('notices').insert({ content: content.slice(0, 200) })
+  revalidatePath('/', 'layout')
+}
+
+// お知らせを削除
+export async function deleteNotice(id: string, key: string) {
+  verify(key)
+  const admin = createAdminSupabaseClient()
+  await admin.from('notices').delete().eq('id', id)
+  revalidatePath('/', 'layout')
+}
