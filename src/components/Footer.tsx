@@ -7,15 +7,15 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.jpeg" alt="ノミペディア" className="w-6 h-6 rounded-full object-cover" />
-            <span className="font-medium text-gray-700">ノミペディア</span>
+            <img src="/logo.jpeg" alt="ノミベディア" className="w-6 h-6 rounded-full object-cover" />
+            <span className="font-medium text-gray-700">ノミベディア</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-blue-600">プライバシーポリシー</Link>
             <Link href="/terms" className="hover:text-blue-600">利用規約</Link>
             <Link href="/contact" className="hover:text-blue-600">お問い合わせ</Link>
           </div>
-          <div className="text-xs">© 2026 ノミペディア</div>
+          <div className="text-xs">© 2026 ノミベディア</div>
         </div>
         <p className="text-center text-xs text-gray-400">
           当サイトは20歳以上の方を対象としています。未成年者の飲酒は法律で禁止されています。

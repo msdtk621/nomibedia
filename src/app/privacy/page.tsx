@@ -1,4 +1,4 @@
-export const metadata = { title: 'プライバシーポリシー | ノミペディア' }
+export const metadata = { title: 'プライバシーポリシー | ノミベディア' }
 
 export default function PrivacyPage() {
   return (
@@ -9,7 +9,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-2">1. 収集する情報</h2>
-          <p>当サイト「ノミペディア」は、以下の情報を収集する場合があります。</p>
+          <p>当サイト「ノミベディア」は、以下の情報を収集する場合があります。</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>投稿・コメント時に入力されたニックネーム・テキスト</li>
             <li>アクセスログ（IPアドレス、ブラウザ情報、アクセス日時）</li>

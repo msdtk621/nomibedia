@@ -4,7 +4,7 @@ import BoardGameClient from './BoardGameClient'
 
 export const revalidate = 0
 
-export const metadata = { title: '飲み屋おすすめボードゲームランキング | ノミペディア' }
+export const metadata = { title: '飲み屋おすすめボードゲームランキング | ノミベディア' }
 
 export default async function BoardGamesPage() {
   const games = await getBoardGames()

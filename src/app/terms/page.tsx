@@ -1,4 +1,4 @@
-export const metadata = { title: '利用規約 | ノミペディア' }
+export const metadata = { title: '利用規約 | ノミベディア' }
 
 export default function TermsPage() {
   return (
@@ -9,7 +9,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-2">第1条（適用）</h2>
-          <p>本規約は、ノミペディア（以下「当サイト」）が提供するサービスの利用に関する条件を定めるものです。ユーザーは本規約に同意した上でサービスをご利用ください。</p>
+          <p>本規約は、ノミベディア（以下「当サイト」）が提供するサービスの利用に関する条件を定めるものです。ユーザーは本規約に同意した上でサービスをご利用ください。</p>
         </section>
 
         <section>

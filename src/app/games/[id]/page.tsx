@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const game = await getGame(id)
   if (!game) return {}
   return {
-    title: `${game.title as string} | ノミペディア`,
+    title: `${game.title as string} | ノミベディア`,
     description: game.description as string,
     openGraph: {
-      title: `${game.title as string} | ノミペディア`,
+      title: `${game.title as string} | ノミベディア`,
       description: game.description as string,
       type: 'article',
     },

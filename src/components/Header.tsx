@@ -33,13 +33,13 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
 
         <Link href="/" className="flex items-center gap-2 shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.jpeg" alt="ノミペディア" className="w-10 h-10 rounded-full object-cover" />
+          <img src="/logo.jpeg" alt="ノミベディア" className="w-10 h-10 rounded-full object-cover" />
           <div className="hidden sm:block">
-            <div className="text-lg font-bold text-gray-900 leading-tight">ノミペディア</div>
+            <div className="text-lg font-bold text-gray-900 leading-tight">ノミベディア</div>
             <div className="text-xs text-gray-500 leading-tight">飲みゲーをみんなでシェアするサイト</div>
           </div>
           <div className="sm:hidden">
-            <div className="text-lg font-bold text-gray-900">ノミペディア</div>
+            <div className="text-lg font-bold text-gray-900">ノミベディア</div>
           </div>
         </Link>
 
