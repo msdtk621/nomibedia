@@ -8,6 +8,8 @@ import CommentSection from '@/components/CommentSection'
 import LikeButton from '@/components/LikeButton'
 import ReportButton from '@/components/ReportButton'
 import OwnerActions from '@/components/OwnerActions'
+import FavoriteButton from '@/components/FavoriteButton'
+import ShareButtons from '@/components/ShareButtons'
 
 export const revalidate = 0
 
@@ -96,9 +98,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
                   </span>
                 )}
                 <DrinkLevel level={drinkLevel} />
-                <button className="ml-auto flex items-center gap-1 text-sm text-gray-500 border border-gray-300 px-3 py-1 rounded-lg hover:bg-gray-50">
-                  ☆ お気に入り
-                </button>
+                <FavoriteButton gameId={id} />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">{game.title as string}</h1>
               <p className="text-gray-600">{game.description as string}</p>
@@ -218,6 +218,9 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
               <img src="/eye.png" alt="閲覧" className="w-4 h-4 object-contain" /> 閲覧数 {(game.view_count as number).toLocaleString()}
             </span>
             <div className="ml-auto"><ReportButton gameId={id} /></div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <ShareButtons title={game.title as string} />
           </div>
         </div>
 

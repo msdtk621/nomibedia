@@ -119,6 +119,7 @@ export default function RuleSectionEditor({
               <input
                 ref={el => { fileRefs.current[section.id] = el }}
                 type="file"
+                name={`rule_image_${section.id}`}
                 accept="image/jpeg,image/png,image/gif,image/webp"
                 onChange={e => handleImage(section.id, e)}
                 className="hidden"

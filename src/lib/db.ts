@@ -27,6 +27,18 @@ export async function getGames({ categorySlug, tag, q }: { categorySlug?: string
   return (data ?? []).map(normalizeGame)
 }
 
+export async function getGamesByIds(ids: string[]) {
+  if (ids.length === 0) return []
+  const supabase = await createServerSupabaseClient()
+  const { data } = await supabase
+    .from('games')
+    .select(`*, category:categories(*), game_tags(tag:tags(*))`)
+    .in('id', ids)
+  // localStorage順を保つ
+  const map = new Map((data ?? []).map(g => [g.id, normalizeGame(g)]))
+  return ids.map(id => map.get(id)).filter(Boolean) as Game[]
+}
+
 export async function getGame(id: string) {
   const supabase = await createServerSupabaseClient()
   const { data } = await supabase

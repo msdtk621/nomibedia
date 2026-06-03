@@ -25,18 +25,30 @@ export async function postGame(formData: FormData) {
 
   const authorId = (formData.get('author_id') as string) || Math.random().toString(36).slice(2, 10)
 
+  async function uploadImage(file: File): Promise<string | null> {
+    const ext = file.name.split('.').pop() ?? 'jpg'
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const { data, error } = await supabase.storage
+      .from('game-images')
+      .upload(filename, file, { contentType: file.type })
+    if (error || !data) return null
+    return supabase.storage.from('game-images').getPublicUrl(data.path).data.publicUrl
+  }
+
   let thumbnailUrl: string | null = null
   if (imageFile && imageFile.size > 0) {
-    const ext = imageFile.name.split('.').pop() ?? 'jpg'
-    const filename = `${Date.now()}-${authorId}.${ext}`
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('game-images')
-      .upload(filename, imageFile, { contentType: imageFile.type })
-    if (!uploadError && uploadData) {
-      const { data: { publicUrl } } = supabase.storage
-        .from('game-images')
-        .getPublicUrl(uploadData.path)
-      thumbnailUrl = publicUrl
+    thumbnailUrl = await uploadImage(imageFile)
+  }
+
+  // ルールステップの画像をアップロードしてURLをマージ
+  if (Array.isArray(ruleSections)) {
+    for (const section of ruleSections) {
+      if (section.mediaType === 'image') {
+        const sectionFile = formData.get(`rule_image_${section.id}`) as File | null
+        if (sectionFile && sectionFile.size > 0) {
+          section.imageUrl = await uploadImage(sectionFile)
+        }
+      }
     }
   }
 
