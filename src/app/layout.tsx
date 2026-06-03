@@ -13,20 +13,21 @@ export const metadata: Metadata = {
   description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+    process.env.URL ?? // Netlifyが自動で設定するサイトURL
+    'http://localhost:3000'
   ),
   openGraph: {
     title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
-    description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
+    description: '定番からオリジナルまで、飲み会ゲームをみんなでシェア',
     type: 'website',
     locale: 'ja_JP',
-    images: [{ url: asset('/logo.jpeg'), width: 512, height: 512, alt: 'ノミベディア' }],
+    images: [{ url: asset('/og.jpeg'), width: 1200, height: 630, alt: 'ノミベディア' }],
   },
   twitter: {
-    card: 'summary',
-    title: 'ノミベディア',
-    description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
-    images: [asset('/logo.jpeg')],
+    card: 'summary_large_image',
+    title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
+    description: '定番からオリジナルまで、飲み会ゲームをみんなでシェア',
+    images: [asset('/og.jpeg')],
   },
 }
 

@@ -114,6 +114,31 @@ export async function updateGame(gameId: string, authorId: string, formData: For
   const drinkLevel = parseInt(formData.get('drink_level') as string) || 1
   const playerCount = JSON.parse((formData.get('player_count') as string) || '[]')
   const gameFlow = JSON.parse((formData.get('game_flow') as string) || '[]')
+  const referenceUrl = (formData.get('reference_url') as string) || null
+  const ruleSectionsRaw = formData.get('rule_sections') as string | null
+  const ruleSections = ruleSectionsRaw ? JSON.parse(ruleSectionsRaw) : null
+
+  // 新しく追加されたステップ画像をアップロード（既存はimageUrlを維持）
+  if (Array.isArray(ruleSections)) {
+    const admin = createAdminSupabaseClient()
+    for (const section of ruleSections) {
+      if (section.mediaType === 'image') {
+        const sectionFile = formData.get(`rule_image_${section.id}`) as File | null
+        if (sectionFile && sectionFile.size > 0) {
+          const ext = sectionFile.name.split('.').pop() ?? 'jpg'
+          const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+          const { data, error } = await admin.storage
+            .from('game-images')
+            .upload(filename, sectionFile, { contentType: sectionFile.type })
+          if (!error && data) {
+            section.imageUrl = admin.storage.from('game-images').getPublicUrl(data.path).data.publicUrl
+          }
+        }
+      } else {
+        section.imageUrl = null
+      }
+    }
+  }
 
   await supabase.from('games').update({
     title,
@@ -127,6 +152,8 @@ export async function updateGame(gameId: string, authorId: string, formData: For
     drink_level: drinkLevel,
     player_count: playerCount,
     game_flow: gameFlow,
+    reference_url: referenceUrl,
+    rule_sections: ruleSections,
   }).eq('id', gameId)
 
   if (tagsRaw !== null) {

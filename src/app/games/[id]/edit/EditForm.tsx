@@ -7,6 +7,7 @@ import { updateGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
 import { type Game } from '@/lib/types'
+import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -30,9 +31,28 @@ export default function EditForm({ game, categories }: { game: Game; categories:
   const existingTags = (game.tags as Array<{ name: string }> | null)?.map(t => t.name) ?? []
   const existingCategoryIds = (game.category_ids as string[] | null) ?? (game.category_id ? [game.category_id as string] : [])
 
+  // 既存のルールステップを編集用の形式に変換
+  const initialSections: RuleSection[] = (() => {
+    const existing = game.rule_sections as Array<{ id?: string; text?: string; mediaType?: string; emojiCanvas?: RuleSection['emojiCanvas']; imageUrl?: string | null }> | null
+    if (existing && existing.length > 0) {
+      return existing.map(s => ({
+        id: s.id ?? Math.random().toString(36).slice(2),
+        text: s.text ?? '',
+        mediaType: (s.mediaType as RuleSection['mediaType']) ?? 'none',
+        imageFile: null,
+        imagePreview: s.imageUrl ?? null,
+        imageUrl: s.imageUrl ?? null,
+        emojiCanvas: s.emojiCanvas ?? [],
+      }))
+    }
+    // 旧形式（rulesテキストのみ）のフォールバック
+    return [{ ...createRuleSection(), text: (game.rules as string) ?? '' }]
+  })()
+
   const [title, setTitle] = useState(game.title as string)
   const [description, setDescription] = useState(game.description as string)
-  const [rules, setRules] = useState(game.rules as string)
+  const [ruleSections, setRuleSections] = useState<RuleSection[]>(initialSections)
+  const [referenceUrl, setReferenceUrl] = useState((game.reference_url as string | null) ?? '')
   const [tips, setTips] = useState((game.tips as string | null) ?? '')
   const [loseCondition, setLoseCondition] = useState((game.lose_condition as string | null) ?? '')
   const [playerCounts, setPlayerCounts] = useState<string[]>((game.player_count as string[] | null) ?? [])
@@ -90,6 +110,14 @@ export default function EditForm({ game, categories }: { game: Game; categories:
           <input type="hidden" name="tags" value={tags.join(',')} />
           <input type="hidden" name="drink_level" value={drinkLevel} />
           <input type="hidden" name="category_ids" value={JSON.stringify(categoryIds)} />
+          <input type="hidden" name="rule_sections" value={JSON.stringify(ruleSections.map(s => ({
+            id: s.id,
+            text: s.text,
+            mediaType: s.mediaType,
+            emojiCanvas: s.emojiCanvas,
+            imageUrl: s.imageUrl ?? null,
+          })))} />
+          <input type="hidden" name="rules" value={ruleSections.map(s => s.text).filter(Boolean).join('\n\n')} />
 
           <section>
             <h2 className="font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">1. 基本情報</h2>
@@ -229,13 +257,9 @@ export default function EditForm({ game, categories }: { game: Game; categories:
             <h2 className="font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">3. 遊び方・ルール</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">遊び方・ルール <span className="text-red-500">*</span></label>
-                <textarea
-                  name="rules" required maxLength={1000} rows={8}
-                  value={rules} onChange={e => setRules(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
-                />
-                <div className="text-xs text-gray-400 text-right mt-1">{rules.length}/1000</div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">遊び方・ルール <span className="text-red-500">*</span></label>
+                <p className="text-xs text-gray-400 mb-3">ステップごとに分けて説明できます。各ステップに画像や絵文字で状況説明を追加できます。</p>
+                <RuleSectionEditor sections={ruleSections} onChange={setRuleSections} />
               </div>
 
               <div>
@@ -253,6 +277,16 @@ export default function EditForm({ game, categories }: { game: Game; categories:
                   name="tips" maxLength={300} rows={3}
                   value={tips} onChange={e => setTips(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">参考動画URL（任意）</label>
+                <input
+                  type="url" name="reference_url" maxLength={500}
+                  value={referenceUrl} onChange={e => setReferenceUrl(e.target.value)}
+                  placeholder="例：https://www.youtube.com/watch?v=..."
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
             </div>

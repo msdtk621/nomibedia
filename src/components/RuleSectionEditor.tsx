@@ -12,6 +12,7 @@ export type RuleSection = {
   mediaType: 'none' | 'image' | 'emoji'
   imageFile?: File | null
   imagePreview?: string | null
+  imageUrl?: string | null
   emojiCanvas: EmojiItem[]
 }
 
