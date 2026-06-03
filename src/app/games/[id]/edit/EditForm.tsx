@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { updateGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 import { type Game } from '@/lib/types'
 
 type Category = { id: string; slug: string; icon: string; name: string }
@@ -117,7 +118,7 @@ export default function EditForm({ game, categories }: { game: Game; categories:
                           selected ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
                         }`}
                       >
-                        {img ? <img src={img} alt={c.name} className="w-4 h-4 rounded object-cover" /> : <span>{c.icon}</span>}
+                        {img ? <img src={asset(img)} alt={c.name} className="w-4 h-4 rounded object-cover" /> : <span>{c.icon}</span>}
                         {c.name}
                       </button>
                     )
@@ -147,7 +148,7 @@ export default function EditForm({ game, categories }: { game: Game; categories:
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map(n => (
                     <button key={n} type="button" onClick={() => setDrinkLevel(n)} className={`transition-opacity ${n <= drinkLevel ? 'opacity-100' : 'opacity-25'}`}>
-                      <img src="/beer.jpeg" alt="ビール" className="w-8 h-8 rounded object-cover" />
+                      <img src={asset("/beer.jpeg")} alt="ビール" className="w-8 h-8 rounded object-cover" />
                     </button>
                   ))}
                   <span className="ml-2 text-sm text-gray-500">

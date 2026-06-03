@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 import RankingSidebar from '@/components/RankingSidebar'
 import { getCategoryImage } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 
 export const revalidate = 0
 
@@ -29,7 +30,7 @@ export default async function CommentsPage() {
       <div className="flex-1 min-w-0">
         <div className="mb-6 flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/comment.png" alt="コメント" className="w-8 h-8 object-contain" />
+          <img src={asset("/comment.png")} alt="コメント" className="w-8 h-8 object-contain" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">コメント新着</h1>
             <p className="text-gray-500 text-sm">最近コメントがついたゲーム</p>
@@ -39,7 +40,7 @@ export default async function CommentsPage() {
         {recentGames?.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/comment.png" alt="コメント" className="w-10 h-10 object-contain mx-auto mb-3" />
+            <img src={asset("/comment.png")} alt="コメント" className="w-10 h-10 object-contain mx-auto mb-3" />
             <p>まだコメントがありません</p>
           </div>
         ) : (

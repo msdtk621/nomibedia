@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react'
 import { toggleLike } from '@/app/actions/like'
+import { asset } from '@/lib/asset'
 
 function getUserId() {
   if (typeof window === 'undefined') return ''
@@ -53,7 +54,7 @@ export default function LikeButton({ gameId, initialCount }: { gameId: string; i
       }`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/like.png" alt="いいね" className="w-5 h-5 object-contain" />
+      <img src={asset("/like.png")} alt="いいね" className="w-5 h-5 object-contain" />
       いいね！ {count}
     </button>
   )

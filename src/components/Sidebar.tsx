@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { categoryImages } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 
 type Category = { id: string; name: string; slug: string; icon: string }
 
@@ -38,7 +39,7 @@ export default function Sidebar({ categories, onNavigate }: { categories: Catego
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={item.img} alt={item.label} className="w-5 h-5 rounded object-cover" />
+            <img src={asset(item.img)} alt={item.label} className="w-5 h-5 rounded object-cover" />
             {item.label}
           </Link>
         ))}
@@ -59,7 +60,7 @@ export default function Sidebar({ categories, onNavigate }: { categories: Catego
           >
             {categoryImages[cat.slug] ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={categoryImages[cat.slug]} alt={cat.name} className="w-5 h-5 rounded object-cover" />
+              <img src={asset(categoryImages[cat.slug])} alt={cat.name} className="w-5 h-5 rounded object-cover" />
             ) : (
               <span>{cat.icon}</span>
             )}

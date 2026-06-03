@@ -1,0 +1,18 @@
+# Nginxキャッシュ無効化
+SetEnvIf Request_URI ".*" Ngx_Cache_NoCacheMode
+
+DirectoryIndex proxy.php
+
+RewriteEngine On
+RewriteBase /nomibedia/
+
+# AuthorizationヘッダーをPHPに渡す
+RewriteCond %{HTTP:Authorization} ^(.*)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+
+# 存在するファイルはそのまま返す
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule .* - [L]
+
+# それ以外はすべて proxy.php に転送
+RewriteRule .* /nomibedia/proxy.php [L,QSA]

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { asset } from '@/lib/asset'
 
 export default function Footer() {
   return (
@@ -7,7 +8,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.jpeg" alt="ノミベディア" className="w-6 h-6 rounded-full object-cover" />
+            <img src={asset("/logo.jpeg")} alt="ノミベディア" className="w-6 h-6 rounded-full object-cover" />
             <span className="font-medium text-gray-700">ノミベディア</span>
           </div>
           <div className="flex items-center gap-4">

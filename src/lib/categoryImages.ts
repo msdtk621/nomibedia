@@ -7,6 +7,9 @@ export const categoryImages: Record<string, string> = {
   other: '/star.jpeg',
 }
 
+import { asset } from './asset'
+
 export function getCategoryImage(slug?: string | null): string {
-  return slug ? (categoryImages[slug] ?? '/star.jpeg') : '/star.jpeg'
+  const path = slug ? (categoryImages[slug] ?? '/star.jpeg') : '/star.jpeg'
+  return asset(path)
 }

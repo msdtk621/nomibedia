@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { type Game } from '@/lib/types'
 import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
+import { asset } from '@/lib/asset'
 
 export const revalidate = 0
 
@@ -46,7 +47,7 @@ export default async function RankingPage({
       <div className="flex-1 min-w-0">
         <div className="mb-6 flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/crown.jpeg" alt="ランキング" className="w-8 h-8 rounded object-cover" />
+          <img src={asset("/crown.jpeg")} alt="ランキング" className="w-8 h-8 rounded object-cover" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">人気ランキング</h1>
             <p className="text-gray-500 text-sm">みんなが「いいね！」した飲みゲーランキング</p>
@@ -67,7 +68,7 @@ export default async function RankingPage({
         {games.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/crown.jpeg" alt="ランキング" className="w-10 h-10 rounded object-cover mx-auto mb-3" />
+          <img src={asset("/crown.jpeg")} alt="ランキング" className="w-10 h-10 rounded object-cover mx-auto mb-3" />
             <p>この期間にゲームがありません</p>
           </div>
         ) : (

@@ -3,6 +3,7 @@ import RankingSidebar from '@/components/RankingSidebar'
 import { getGames, getCategories } from '@/lib/db'
 import Link from 'next/link'
 import { getCategoryImage } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 
 export const revalidate = 0
 
@@ -33,7 +34,7 @@ export default async function Home({
             {/* ヒーロー画像＋キャッチコピー */}
             <div className="text-center mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/hero.jpeg" alt="ノミベディア" className="w-56 h-56 md:w-64 md:h-64 object-contain mx-auto" />
+              <img src={asset("/hero.jpeg")} alt="ノミベディア" className="w-56 h-56 md:w-64 md:h-64 object-contain mx-auto" />
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 -mt-2">
                 飲みの場を<span className="text-amber-400">もっと</span>楽しく！
               </h1>
@@ -49,7 +50,7 @@ export default async function Home({
                   className="bg-white border border-gray-200 rounded-xl p-3 md:p-4 text-center hover:border-amber-300 hover:shadow-sm transition-all"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={card.img} alt={card.title} className="w-8 h-8 object-contain mx-auto mb-2" />
+                  <img src={asset(card.img)} alt={card.title} className="w-8 h-8 object-contain mx-auto mb-2" />
                   <div className="font-bold text-gray-900 text-sm md:text-base">{card.title}</div>
                   <div className="text-gray-400 text-[10px] md:text-xs mt-0.5 hidden sm:block">{card.desc}</div>
                   <div className="text-gray-300 text-xs mt-1">›</div>
@@ -61,7 +62,7 @@ export default async function Home({
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 md:p-5">
               <div className="flex items-center gap-2 mb-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/beer.jpeg" alt="" className="w-6 h-6 object-contain" />
+                <img src={asset("/beer.jpeg")} alt="" className="w-6 h-6 object-contain" />
                 <h2 className="font-bold text-gray-900">おうち飲みや飲み会が、もっと盛り上がる！</h2>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed mb-4">
@@ -84,7 +85,7 @@ export default async function Home({
           <div className="flex gap-2 flex-wrap">
             <Link href="/" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-amber-400 hover:text-amber-600 transition-colors">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/star.jpeg" alt="すべて" className="w-4 h-4 rounded object-cover" />
+              <img src={asset("/star.jpeg")} alt="すべて" className="w-4 h-4 rounded object-cover" />
               すべてのゲーム
             </Link>
             {categories.map((cat: { id: string; slug: string; icon: string; name: string }) => (
@@ -108,7 +109,7 @@ export default async function Home({
         {games.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/beer.jpeg" alt="ビール" className="w-10 h-10 rounded object-cover mx-auto mb-3" />
+            <img src={asset("/beer.jpeg")} alt="ビール" className="w-10 h-10 rounded object-cover mx-auto mb-3" />
             <p>まだゲームが投稿されていません</p>
             <Link href="/post" className="mt-4 inline-block px-6 py-2 bg-amber-400 text-white rounded-lg text-sm hover:bg-amber-500">
               最初に投稿する

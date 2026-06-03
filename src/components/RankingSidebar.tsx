@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getCategoryImage } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 
 
 async function getTopGames() {
@@ -29,7 +30,7 @@ export default async function RankingSidebar() {
       <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4">
         <div className="flex items-center gap-2 mb-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/crown.jpeg" alt="ランキング" className="w-5 h-5 object-cover rounded" />
+          <img src={asset("/crown.jpeg")} alt="ランキング" className="w-5 h-5 object-cover rounded" />
           <h3 className="font-bold text-gray-900">人気ランキング</h3>
         </div>
 
@@ -51,9 +52,9 @@ export default async function RankingSidebar() {
                     <div className="text-sm font-medium text-gray-900 truncate">{game.title}</div>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <span className="flex items-center gap-0.5"><img src="/like.png" alt="いいね" className="w-3 h-3 object-contain" />{game.like_count}</span>
+                      <span className="flex items-center gap-0.5"><img src={asset("/like.png")} alt="いいね" className="w-3 h-3 object-contain" />{game.like_count}</span>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <span className="flex items-center gap-0.5"><img src="/comment.png" alt="コメント" className="w-3 h-3 object-contain" />{game.comment_count}</span>
+                      <span className="flex items-center gap-0.5"><img src={asset("/comment.png")} alt="コメント" className="w-3 h-3 object-contain" />{game.comment_count}</span>
                     </div>
                   </div>
                   <div className="text-sm font-bold shrink-0 text-gray-400 w-5 text-center">{i + 1}</div>

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { postGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
 import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
+import { asset } from '@/lib/asset'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -129,7 +130,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
                         }`}
                       >
                         {img
-                          ? <img src={img} alt={c.name} className="w-4 h-4 rounded object-cover" />
+                          ? <img src={asset(img)} alt={c.name} className="w-4 h-4 rounded object-cover" />
                           : <span>{c.icon}</span>
                         }
                         {c.name}
@@ -201,7 +202,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
                       onClick={() => setDrinkLevel(n)}
                       className={`transition-opacity ${n <= drinkLevel ? 'opacity-100' : 'opacity-25'}`}
                     >
-                      <img src="/beer.jpeg" alt="ビール" className="w-8 h-8 rounded object-cover" />
+                      <img src={asset("/beer.jpeg")} alt="ビール" className="w-8 h-8 rounded object-cover" />
                     </button>
                   ))}
                   <span className="ml-2 text-sm text-gray-500">

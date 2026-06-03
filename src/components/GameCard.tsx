@@ -2,9 +2,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Game } from '@/lib/types'
 import { getCategoryImage } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 
 function Icon({ src, alt, size = 14 }: { src: string; alt: string; size?: number }) {
-  return <img src={src} alt={alt} width={size} height={size} className="object-contain inline-block" style={{ width: size, height: size }} />
+  return <img src={asset(src)} alt={alt} width={size} height={size} className="object-contain inline-block" style={{ width: size, height: size }} />
 }
 
 export default function GameCard({ game }: { game: Game }) {

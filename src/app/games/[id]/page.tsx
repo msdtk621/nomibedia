@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCategoryImage } from '@/lib/categoryImages'
+import { asset } from '@/lib/asset'
 import RankingSidebar from '@/components/RankingSidebar'
 import CommentSection from '@/components/CommentSection'
 import LikeButton from '@/components/LikeButton'
@@ -33,7 +34,7 @@ function DrinkLevel({ level }: { level: number }) {
     <div className="flex items-center gap-0.5">
       {[1,2,3,4,5].map(n => (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={n} src="/beer.jpeg" alt="ビール" className={`w-5 h-5 rounded object-cover ${n <= level ? 'opacity-100' : 'opacity-20'}`} />
+        <img key={n} src={asset("/beer.jpeg")} alt="ビール" className={`w-5 h-5 rounded object-cover ${n <= level ? 'opacity-100' : 'opacity-20'}`} />
       ))}
     </div>
   )
@@ -211,11 +212,11 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
             <LikeButton gameId={id} initialCount={game.like_count as number} />
             <span className="flex items-center gap-1 text-gray-500 text-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/comment.png" alt="コメント" className="w-4 h-4 object-contain" /> コメント {game.comment_count as number}
+              <img src={asset("/comment.png")} alt="コメント" className="w-4 h-4 object-contain" /> コメント {game.comment_count as number}
             </span>
             <span className="flex items-center gap-1 text-gray-500 text-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/eye.png" alt="閲覧" className="w-4 h-4 object-contain" /> 閲覧数 {(game.view_count as number).toLocaleString()}
+              <img src={asset("/eye.png")} alt="閲覧" className="w-4 h-4 object-contain" /> 閲覧数 {(game.view_count as number).toLocaleString()}
             </span>
             <div className="ml-auto"><ReportButton gameId={id} /></div>
           </div>

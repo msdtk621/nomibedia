@@ -4,6 +4,7 @@ import './globals.css'
 import MobileLayout from '@/components/MobileLayout'
 import Footer from '@/components/Footer'
 import { getCategories } from '@/lib/db'
+import { asset } from '@/lib/asset'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -19,13 +20,13 @@ export const metadata: Metadata = {
     description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
     type: 'website',
     locale: 'ja_JP',
-    images: [{ url: '/logo.jpeg', width: 512, height: 512, alt: 'ノミベディア' }],
+    images: [{ url: asset('/logo.jpeg'), width: 512, height: 512, alt: 'ノミベディア' }],
   },
   twitter: {
     card: 'summary',
     title: 'ノミベディア',
     description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
-    images: ['/logo.jpeg'],
+    images: [asset('/logo.jpeg')],
   },
 }
 
