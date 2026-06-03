@@ -36,7 +36,7 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
           <img src="/logo.jpeg" alt="ノミベディア" className="w-10 h-10 rounded-full object-cover" />
           <div className="hidden sm:block">
             <div className="text-lg font-bold text-gray-900 leading-tight">ノミベディア</div>
-            <div className="text-xs text-gray-500 leading-tight">飲みゲーをみんなでシェアするサイト</div>
+            <div className="text-xs text-gray-500 leading-tight">定番からオリジナルまで、飲み会ゲームの百科事典</div>
           </div>
           <div className="sm:hidden">
             <div className="text-lg font-bold text-gray-900">ノミベディア</div>

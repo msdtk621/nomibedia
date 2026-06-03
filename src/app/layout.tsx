@@ -8,14 +8,14 @@ import { getCategories } from '@/lib/db'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ノミベディア - 飲みゲーをみんなでシェアするサイト',
+  title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
   description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ??
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
   ),
   openGraph: {
-    title: 'ノミベディア - 飲みゲーをみんなでシェアするサイト',
+    title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
     description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
     type: 'website',
     locale: 'ja_JP',
