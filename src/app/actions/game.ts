@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 
 export async function postGame(formData: FormData) {
@@ -25,14 +25,15 @@ export async function postGame(formData: FormData) {
 
   const authorId = (formData.get('author_id') as string) || Math.random().toString(36).slice(2, 10)
 
+  const admin = createAdminSupabaseClient()
   async function uploadImage(file: File): Promise<string | null> {
     const ext = file.name.split('.').pop() ?? 'jpg'
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
-    const { data, error } = await supabase.storage
+    const { data, error } = await admin.storage
       .from('game-images')
       .upload(filename, file, { contentType: file.type })
     if (error || !data) return null
-    return supabase.storage.from('game-images').getPublicUrl(data.path).data.publicUrl
+    return admin.storage.from('game-images').getPublicUrl(data.path).data.publicUrl
   }
 
   let thumbnailUrl: string | null = null
