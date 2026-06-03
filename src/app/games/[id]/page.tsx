@@ -53,6 +53,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   const requiredItems = game.required_items as string | null
   const loseCondition = game.lose_condition as string | null
   const tips = game.tips as string | null
+  const referenceUrl = game.reference_url as string | null
 
   return (
     <div className="flex gap-6 p-3 md:p-6">
@@ -156,6 +157,19 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-4">
             <h2 className="font-bold text-amber-800 mb-2">💡 ポイント・コツ</h2>
             <p className="text-amber-700">{tips}</p>
+          </div>
+        )}
+
+        {referenceUrl && (
+          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
+            <h2 className="font-bold text-gray-900 mb-2">参考動画</h2>
+            <a href={referenceUrl} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-2 text-blue-600 hover:underline text-sm break-all">
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              {referenceUrl}
+            </a>
           </div>
         )}
 

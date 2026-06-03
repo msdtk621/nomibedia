@@ -24,6 +24,7 @@ export type Game = {
   category?: { name: string; icon: string; slug: string } | null
   tags: Tag[]
   thumbnail_url?: string | null
+  reference_url?: string | null
   author_id: string
   author_name?: string | null
   drink_level?: number

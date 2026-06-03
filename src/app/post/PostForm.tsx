@@ -132,7 +132,8 @@ export default function PostForm({ categories }: { categories: Category[] }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">サムネイル画像（任意）</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">トップ画像（任意）</label>
+                <p className="text-xs text-gray-400 mb-2">設定しない場合はカテゴリのイラストが表示されます</p>
                 <div
                   className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer hover:border-blue-400 transition-colors"
                   onClick={() => fileInputRef.current?.click()}
@@ -327,6 +328,16 @@ export default function PostForm({ categories }: { categories: Category[] }) {
                   placeholder="より楽しむためのポイントやコツがあれば教えてください"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">参考動画URL（任意）</label>
+                <input
+                  type="url" name="reference_url" maxLength={500}
+                  placeholder="例：https://www.youtube.com/watch?v=..."
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                />
+                <p className="text-xs text-gray-400 mt-1">YouTubeなどの参考動画リンクを貼れます</p>
               </div>
             </div>
           </section>
