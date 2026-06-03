@@ -155,7 +155,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
                   <div className="flex-1">
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{section.text}</p>
                     {section.mediaType === 'emoji' && section.emojiCanvas && section.emojiCanvas.length > 0 && (
-                      <div className="relative mt-2 bg-gray-50 rounded-lg" style={{ height: 160 }}>
+                      <div className="relative mt-2 bg-gray-50 rounded-lg overflow-hidden" style={{ height: 220 }}>
                         {section.emojiCanvas.map((item) => (
                           <span
                             key={item.id}

@@ -83,7 +83,7 @@ export default function EmojiCanvas({
       {/* キャンバス */}
       <div
         ref={canvasRef}
-        className="relative w-full bg-gray-50"
+        className="relative w-full bg-gray-50 overflow-hidden"
         style={{ height: 220 }}
         onMouseMove={onMouseMove}
         onMouseUp={stopDrag}
