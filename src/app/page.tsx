@@ -62,7 +62,7 @@ export default async function Home({
               <div className="flex items-center gap-2 mb-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/beer.jpeg" alt="" className="w-6 h-6 object-contain" />
-                <h2 className="font-bold text-gray-900">おうち飲みも、飲み会ももっと盛り上がる！</h2>
+                <h2 className="font-bold text-gray-900">おうち飲みや飲み会が、もっと盛り上がる！</h2>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed mb-4">
                 ノミベディアでは、誰でも簡単に遊べる飲みゲームを紹介・共有できます。あなたのおすすめゲームを投稿して、みんなで楽しもう！
@@ -79,7 +79,7 @@ export default async function Home({
 
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900 mb-3">
-            {q ? `「${q}」の検索結果` : tag ? `#${tag} のゲーム` : '飲みゲー一覧'}
+            {q ? `「${q}」の検索結果` : tag ? `#${tag} のゲーム` : '飲みゲーム一覧'}
           </h2>
           <div className="flex gap-2 flex-wrap">
             <Link href="/" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-amber-400 hover:text-amber-600 transition-colors">
