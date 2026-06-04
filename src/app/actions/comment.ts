@@ -3,7 +3,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { revalidatePath } from 'next/cache'
 
-export async function postComment(gameId: string, authorName: string, content: string) {
+export async function postComment(gameId: string, authorName: string, content: string, replyTo?: number | null) {
   const supabase = await createServerSupabaseClient()
 
   const { count } = await supabase
@@ -20,6 +20,7 @@ export async function postComment(gameId: string, authorName: string, content: s
     author_id: authorId,
     content,
     number,
+    reply_to: replyTo ?? null,
   })
 
   await supabase.from('games').update({ comment_count: number }).eq('id', gameId)
