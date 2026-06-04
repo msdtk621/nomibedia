@@ -26,6 +26,11 @@ export const metadata: Metadata = {
     description: '定番からオリジナルまで、飲み会ゲームをみんなでシェア',
     images: [asset('/og.jpeg')],
   },
+  // Google Search Console認証：環境変数 GOOGLE_SITE_VERIFICATION に
+  // 認証コードをセットすると <meta google-site-verification> が自動で出力される
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
