@@ -106,7 +106,7 @@ export default function EmojiCanvas({
       <div
         ref={canvasRef}
         className="relative w-full bg-gray-50 overflow-hidden"
-        style={{ height: 220 }}
+        style={{ height: 220, touchAction: 'none' }}
         onMouseMove={onMouseMove}
         onMouseUp={stopDrag}
         onMouseLeave={stopDrag}
@@ -121,7 +121,7 @@ export default function EmojiCanvas({
           <div
             key={item.id}
             className={`absolute cursor-grab active:cursor-grabbing rounded ${selectedId === item.id ? 'ring-2 ring-blue-400' : ''}`}
-            style={{ left: item.x, top: item.y, fontSize: item.size, lineHeight: 1, transform: `rotate(${item.rotation ?? 0}deg)` }}
+            style={{ left: item.x, top: item.y, fontSize: item.size, lineHeight: 1, transform: `rotate(${item.rotation ?? 0}deg)`, touchAction: 'none' }}
             onMouseDown={e => onMouseDown(e, item.id)}
             onTouchStart={e => onTouchStart(e, item.id)}
             onTouchMove={onTouchMove}
