@@ -52,7 +52,9 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
 
   const category = game.category as { name: string; icon: string; slug: string } | null
   const tags = game.tags as Array<{ id: string; name: string }> | null
-  const playerCount = game.player_count as string[] | null
+  const playerCount = ((game.player_count as string[] | null) ?? [])
+    .slice()
+    .sort((a, b) => parseInt(a) - parseInt(b))
   const gameFlow = game.game_flow as string[] | null
   const drinkLevel = (game.drink_level as number) ?? 1
   const requiredItems = game.required_items as string | null

@@ -85,7 +85,7 @@ export default async function Home({
           <div className="flex gap-2 flex-wrap">
             <Link href="/" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-amber-400 hover:text-amber-600 transition-colors">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset("/star-orange.png")} alt="すべて" className="w-4 h-4 rounded object-cover" />
+              <img src={asset("/star-blue.png")} alt="すべて" className="w-4 h-4 rounded object-cover" />
               すべてのゲーム
             </Link>
             {categories.map((cat: { id: string; slug: string; icon: string; name: string }) => (
