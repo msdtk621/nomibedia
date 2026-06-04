@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { getCategoryImage } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
+import RecommendedGoods from './RecommendedGoods'
 
 
 async function getTopGames() {
@@ -80,6 +81,8 @@ export default async function RankingSidebar() {
           ))}
         </div>
       </div>
+
+      <RecommendedGoods />
     </aside>
   )
 }

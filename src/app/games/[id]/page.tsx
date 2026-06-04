@@ -11,6 +11,8 @@ import ReportButton from '@/components/ReportButton'
 import OwnerActions from '@/components/OwnerActions'
 import FavoriteButton from '@/components/FavoriteButton'
 import ShareButtons from '@/components/ShareButtons'
+import RequiredItems from '@/components/RequiredItems'
+import HangoverBanner from '@/components/HangoverBanner'
 
 export const revalidate = 0
 
@@ -140,7 +142,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
         {requiredItems && (
           <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
             <h2 className="font-bold text-gray-900 mb-2">必要なもの</h2>
-            <p className="text-gray-700">{requiredItems}</p>
+            <RequiredItems text={requiredItems} />
           </div>
         )}
 
@@ -224,6 +226,8 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
             <ShareButtons title={game.title as string} />
           </div>
         </div>
+
+        <HangoverBanner />
 
         <CommentSection gameId={id} initialComments={gameComments} />
       </div>

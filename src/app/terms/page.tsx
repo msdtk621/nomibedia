@@ -5,7 +5,7 @@ export default function TermsPage() {
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">利用規約</h1>
       <div className="bg-white border border-gray-200 rounded-xl p-6 text-gray-700 space-y-6">
-        <p className="text-sm text-gray-500">最終更新日：2026年6月2日</p>
+        <p className="text-sm text-gray-500">最終更新日：2026年6月4日</p>
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-2">第1条（適用）</h2>
@@ -37,7 +37,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-2">第5条（免責事項）</h2>
-          <p>当サイトに掲載されたゲーム・コンテンツの正確性・安全性について保証しません。ユーザーは自己の責任においてサービスをご利用ください。飲酒は適量を心がけ、20歳未満の飲酒は法律で禁じられています。</p>
+          <p>当サイトに掲載されたゲーム・コンテンツの正確性・安全性について保証しません。ユーザーは自己の責任においてサービスをご利用ください。飲酒は適量を心がけ、20歳未満の飲酒は法律で禁じられています。また、当サイトはアフィリエイトプログラムを通じて商品・サービスを紹介していますが、紹介先の商品・サービスの内容、購入・利用により生じたいかなる損害についても当サイトは責任を負いません。取引はユーザーと販売事業者との間で行われるものとします。</p>
         </section>
 
         <section>
