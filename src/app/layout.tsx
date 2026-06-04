@@ -4,16 +4,14 @@ import './globals.css'
 import MobileLayout from '@/components/MobileLayout'
 import Footer from '@/components/Footer'
 import { getCategories } from '@/lib/db'
+import { SITE_URL } from '@/lib/site'
 
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
   description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-  ),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
     description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',

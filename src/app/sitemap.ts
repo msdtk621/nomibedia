@@ -1,8 +1,9 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { MetadataRoute } from 'next'
+import { SITE_URL } from '@/lib/site'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = 'https://nomipedia.jp'
+  const base = SITE_URL
   const supabase = await createServerSupabaseClient()
 
   const { data: games } = await supabase.from('games').select('id, created_at').order('created_at', { ascending: false })

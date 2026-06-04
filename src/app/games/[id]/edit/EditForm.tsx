@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { updateGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
@@ -22,7 +21,6 @@ const toggleArray = <T,>(arr: T[], val: T): T[] =>
   arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]
 
 export default function EditForm({ game, categories }: { game: Game; categories: Category[] }) {
-  const router = useRouter()
   const [authorized, setAuthorized] = useState<boolean | null>(null)
 
   const authorId = game.author_id as string

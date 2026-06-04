@@ -1,6 +1,7 @@
 'use server'
 
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { SITE_URL } from '@/lib/site'
 
 const NOTIFY_EMAIL = 'kippo.pokky@gmail.com'
 
@@ -16,8 +17,7 @@ export async function reportGame(gameId: string, reason: string) {
     .single()
 
   const gameTitle = game?.title ?? '(不明)'
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://extraordinary-faloodeh-6680cf.netlify.app'
-  const gameUrl = `${baseUrl}/games/${gameId}`
+  const gameUrl = `${SITE_URL}/games/${gameId}`
 
   // Resend経由でメール通知（APIキーがあれば送信）
   const apiKey = process.env.RESEND_API_KEY

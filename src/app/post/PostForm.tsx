@@ -27,7 +27,6 @@ export default function PostForm({ categories }: { categories: Category[] }) {
   const [authorId] = useState(() => generateAuthorId())
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [rules, setRules] = useState('')
   const [ruleSections, setRuleSections] = useState<RuleSection[]>([createRuleSection()])
   const [tips, setTips] = useState('')
   const [loseCondition, setLoseCondition] = useState('')
