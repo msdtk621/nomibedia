@@ -12,7 +12,7 @@ const navItems = [
   { href: '/new', label: '新着ゲーム', img: '/clock.png' },
   { href: '/comments', label: 'コメント新着', img: '/comment.png' },
   { href: '/board-games', label: 'ボードゲーム投票', img: '/boardgame.png' },
-  { href: '/favorites', label: 'お気に入り', img: '/star.jpeg' },
+  { href: '/favorites', label: 'お気に入り', img: '/star-blue.png' },
 ]
 
 type Notice = { id: string; content: string; created_at: string }
