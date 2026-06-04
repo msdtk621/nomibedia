@@ -29,6 +29,16 @@ export async function getGames({ categorySlug, tag, q }: { categorySlug?: string
     if (cat) query = query.eq('category_id', cat.id)
   }
 
+  if (tag) {
+    const { data: tagRow } = await supabase.from('tags').select('id').eq('name', tag).single()
+    const { data: gameTags } = tagRow
+      ? await supabase.from('game_tags').select('game_id').eq('tag_id', tagRow.id)
+      : { data: null }
+    const gameIds = (gameTags ?? []).map(gt => gt.game_id)
+    // 一致するタグが無ければ空の結果を返す（全件表示にフォールバックしない）
+    query = query.in('id', gameIds.length > 0 ? gameIds : ['__none__'])
+  }
+
   if (q) {
     query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%`)
   }

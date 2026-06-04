@@ -56,7 +56,7 @@ export default function GameCard({ game }: { game: Game }) {
       <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
         <span className="flex items-center gap-1"><Icon src="/like.png" alt="いいね" /> {game.like_count}</span>
         <span className="flex items-center gap-1"><Icon src="/comment.png" alt="コメント" /> {game.comment_count}</span>
-        <span className="flex items-center gap-1"><Icon src="/eye.png" alt="閲覧" /> {game.view_count.toLocaleString()}</span>
+        <span className="flex items-center gap-1"><Icon src="/eye.png" alt="閲覧" /> {(game.view_count ?? 0).toLocaleString()}</span>
         <span className="ml-auto">{new Date(game.created_at).toLocaleDateString('ja-JP')}</span>
       </div>
     </Link>

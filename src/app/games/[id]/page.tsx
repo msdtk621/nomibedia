@@ -216,7 +216,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
             </span>
             <span className="flex items-center gap-1 text-gray-500 text-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset("/eye.png")} alt="閲覧" className="w-4 h-4 object-contain" /> 閲覧数 {(game.view_count as number).toLocaleString()}
+              <img src={asset("/eye.png")} alt="閲覧" className="w-4 h-4 object-contain" /> 閲覧数 {((game.view_count as number) ?? 0).toLocaleString()}
             </span>
             <div className="ml-auto"><ReportButton gameId={id} /></div>
           </div>

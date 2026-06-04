@@ -5,17 +5,14 @@ import MobileLayout from '@/components/MobileLayout'
 import Footer from '@/components/Footer'
 import { getCategories, getNotices } from '@/lib/db'
 import { asset } from '@/lib/asset'
+import { SITE_URL } from '@/lib/site'
 
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
   description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.URL ?? // Netlifyが自動で設定するサイトURL
-    'http://localhost:3000'
-  ),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
     description: '定番からオリジナルまで、飲み会ゲームをみんなでシェア',

@@ -20,7 +20,7 @@ export default function LikeButton({ gameId, initialCount }: { gameId: string; i
   const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
-    const userId = getUserId()
+    getUserId() // 初回アクセス時に匿名IDを発行しておく
     const likedGames = JSON.parse(localStorage.getItem('nomipedia_likes') || '[]')
     setLiked(likedGames.includes(gameId))
   }, [gameId])
