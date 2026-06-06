@@ -123,6 +123,25 @@ export async function updateGame(gameId: string, authorId: string, formData: For
   // 本人確認済みなので以降の書き込みは管理者権限で行う（anonキーはUPDATE/DELETEがRLSでブロックされるため）
   const admin = createAdminSupabaseClient()
 
+  async function uploadImage(file: File): Promise<string | null> {
+    const ext = file.name.split('.').pop() ?? 'jpg'
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const { data, error } = await admin.storage.from('game-images').upload(filename, file, { contentType: file.type })
+    if (error || !data) return null
+    return admin.storage.from('game-images').getPublicUrl(data.path).data.publicUrl
+  }
+
+  // トップ画像の更新（新規アップロード / 削除 / 変更なし）
+  const newImageFile = formData.get('image') as File | null
+  const removeThumbnail = (formData.get('remove_thumbnail') as string) === '1'
+  let thumbnailUpdate: { thumbnail_url: string | null } | null = null
+  if (newImageFile && newImageFile.size > 0) {
+    const url = await uploadImage(newImageFile)
+    if (url) thumbnailUpdate = { thumbnail_url: url }
+  } else if (removeThumbnail) {
+    thumbnailUpdate = { thumbnail_url: null }
+  }
+
   // 新しく追加されたステップ画像をアップロード（既存はimageUrlを維持）
   if (Array.isArray(ruleSections)) {
     for (const section of ruleSections) {
@@ -158,6 +177,7 @@ export async function updateGame(gameId: string, authorId: string, formData: For
     game_flow: gameFlow,
     reference_url: referenceUrl,
     rule_sections: ruleSections,
+    ...(thumbnailUpdate ?? {}),
   }).eq('id', gameId)
 
   if (tagsRaw !== null) {

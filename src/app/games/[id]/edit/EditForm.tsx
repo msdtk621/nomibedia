@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { updateGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
 import { type Game } from '@/lib/types'
 import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
+import { compressImage, setFileInput } from '@/lib/compressImage'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -59,6 +61,22 @@ export default function EditForm({ game, categories }: { game: Game; categories:
   const [categoryIds, setCategoryIds] = useState<string[]>(existingCategoryIds)
   const [tags, setTags] = useState<string[]>(existingTags)
   const [tagInput, setTagInput] = useState('')
+  // トップ画像
+  const [imagePreview, setImagePreview] = useState<string | null>((game.thumbnail_url as string | null) ?? null)
+  const [removeThumbnail, setRemoveThumbnail] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const input = e.target
+    const compressed = await compressImage(file)
+    setFileInput(input, compressed)
+    setRemoveThumbnail(false)
+    const reader = new FileReader()
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string)
+    reader.readAsDataURL(compressed)
+  }
 
   useEffect(() => {
     const myIds = JSON.parse(localStorage.getItem('nomipedia_my_author_ids') || '[]')
@@ -116,6 +134,7 @@ export default function EditForm({ game, categories }: { game: Game; categories:
             imageUrl: s.imageUrl ?? null,
           })))} />
           <input type="hidden" name="rules" value={ruleSections.map(s => s.text).filter(Boolean).join('\n\n')} />
+          <input type="hidden" name="remove_thumbnail" value={removeThumbnail ? '1' : ''} />
 
           <section>
             <h2 className="font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">1. 基本情報</h2>
@@ -150,6 +169,45 @@ export default function EditForm({ game, categories }: { game: Game; categories:
                     )
                   })}
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">トップ画像（任意）</label>
+                <p className="text-xs text-gray-400 mb-2">設定しない場合はカテゴリのイラストが表示されます</p>
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer hover:border-blue-400 transition-colors"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {imagePreview ? (
+                    <div className="relative w-full h-40">
+                      <Image src={imagePreview} alt="プレビュー" fill className="object-cover rounded-lg" />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setImagePreview(null)
+                          setRemoveThumbnail(true)
+                          if (fileInputRef.current) fileInputRef.current.value = ''
+                        }}
+                        className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-black/70"
+                      >×</button>
+                    </div>
+                  ) : (
+                    <div className="py-4">
+                      <div className="text-3xl mb-2">📷</div>
+                      <p className="text-sm text-gray-500">クリックして画像を選択</p>
+                      <p className="text-xs text-gray-400 mt-1">JPG・PNG・GIF・WebP</p>
+                    </div>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  name="image"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
               </div>
 
               <div>
