@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from './supabase-server'
+import { createServerSupabaseClient, createAdminSupabaseClient } from './supabase-server'
 import { type Game } from './types'
 
 export async function getCategories() {
@@ -68,7 +68,8 @@ export async function getGame(id: string) {
     .single()
   if (!data) return null
 
-  await supabase.from('games').update({ view_count: (data.view_count ?? 0) + 1 }).eq('id', id)
+  // 閲覧数の加算はRLSを跨ぐため管理者権限で行う
+  createAdminSupabaseClient().from('games').update({ view_count: (data.view_count ?? 0) + 1 }).eq('id', id).then(() => {})
 
   return normalizeGame(data)
 }

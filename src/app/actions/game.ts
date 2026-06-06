@@ -76,7 +76,7 @@ export async function postGame(formData: FormData) {
   if (tagsRaw) {
     const tagNames = tagsRaw.split(',').map((t: string) => t.trim()).filter(Boolean).slice(0, 10)
     for (const name of tagNames) {
-      const tagId = await getOrCreateTagId(supabase, name)
+      const tagId = await getOrCreateTagId(name)
       if (tagId) {
         await supabase.from('game_tags').insert({ game_id: game.id, tag_id: tagId })
       }
@@ -120,9 +120,11 @@ export async function updateGame(gameId: string, authorId: string, formData: For
   const ruleSectionsRaw = formData.get('rule_sections') as string | null
   const ruleSections = ruleSectionsRaw ? JSON.parse(ruleSectionsRaw) : null
 
+  // 本人確認済みなので以降の書き込みは管理者権限で行う（anonキーはUPDATE/DELETEがRLSでブロックされるため）
+  const admin = createAdminSupabaseClient()
+
   // 新しく追加されたステップ画像をアップロード（既存はimageUrlを維持）
   if (Array.isArray(ruleSections)) {
-    const admin = createAdminSupabaseClient()
     for (const section of ruleSections) {
       if (section.mediaType === 'image') {
         const sectionFile = formData.get(`rule_image_${section.id}`) as File | null
@@ -142,7 +144,7 @@ export async function updateGame(gameId: string, authorId: string, formData: For
     }
   }
 
-  await supabase.from('games').update({
+  await admin.from('games').update({
     title,
     category_id: categoryIds[0] ?? null,
     category_ids: categoryIds,
@@ -159,12 +161,12 @@ export async function updateGame(gameId: string, authorId: string, formData: For
   }).eq('id', gameId)
 
   if (tagsRaw !== null) {
-    await supabase.from('game_tags').delete().eq('game_id', gameId)
+    await admin.from('game_tags').delete().eq('game_id', gameId)
     const tagNames = tagsRaw.split(',').map((t: string) => t.trim()).filter(Boolean).slice(0, 10)
     for (const name of tagNames) {
-      const tagId = await getOrCreateTagId(supabase, name)
+      const tagId = await getOrCreateTagId(name)
       if (tagId) {
-        await supabase.from('game_tags').insert({ game_id: gameId, tag_id: tagId })
+        await admin.from('game_tags').insert({ game_id: gameId, tag_id: tagId })
       }
     }
   }
@@ -172,13 +174,11 @@ export async function updateGame(gameId: string, authorId: string, formData: For
   redirect(`/games/${gameId}`)
 }
 
-// タグを「探す→無ければ作る」で取得（upsertのUPDATE経路を避けてRLSブロックを回避）
-async function getOrCreateTagId(
-  supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
-  name: string
-): Promise<string | null> {
-  const { data: existing } = await supabase.from('tags').select('id').eq('name', name).maybeSingle()
+// タグを「探す→無ければ作る」で取得（管理者権限でRLSブロックを回避）
+async function getOrCreateTagId(name: string): Promise<string | null> {
+  const admin = createAdminSupabaseClient()
+  const { data: existing } = await admin.from('tags').select('id').eq('name', name).maybeSingle()
   if (existing) return existing.id
-  const { data: created } = await supabase.from('tags').insert({ name }).select('id').single()
+  const { data: created } = await admin.from('tags').insert({ name }).select('id').single()
   return created?.id ?? null
 }

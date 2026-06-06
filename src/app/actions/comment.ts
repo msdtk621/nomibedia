@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { revalidatePath } from 'next/cache'
 
 export async function postComment(gameId: string, authorName: string, content: string, replyTo?: number | null) {
@@ -23,7 +23,8 @@ export async function postComment(gameId: string, authorName: string, content: s
     reply_to: replyTo ?? null,
   })
 
-  await supabase.from('games').update({ comment_count: number }).eq('id', gameId)
+  // コメント数の更新はRLSを跨ぐため管理者権限で行う
+  await createAdminSupabaseClient().from('games').update({ comment_count: number }).eq('id', gameId)
 
   revalidatePath(`/games/${gameId}`)
 }
