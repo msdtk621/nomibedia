@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useFormStatus } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import { postGame } from '@/app/actions/game'
 import { categoryImages } from '@/lib/categoryImages'
 import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
 import { asset } from '@/lib/asset'
+import { compressImage, setFileInput } from '@/lib/compressImage'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -22,6 +24,20 @@ const GAME_FLOWS = [
 
 function generateAuthorId() {
   return Math.random().toString(36).slice(2, 10)
+}
+
+// 送信中はボタンを無効化して二重投稿を防ぐ
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {pending ? '投稿中…' : '投稿する'}
+    </button>
+  )
 }
 
 export default function PostForm({ categories }: { categories: Category[] }) {
@@ -43,17 +59,16 @@ export default function PostForm({ categories }: { categories: Category[] }) {
   const toggleArray = <T,>(arr: T[], val: T): T[] =>
     arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 5 * 1024 * 1024) {
-      alert('画像は5MB以下にしてください')
-      e.target.value = ''
-      return
-    }
+    const input = e.target
+    // 大きな写真は自動で縮小・圧縮して送信用に書き戻す
+    const compressed = await compressImage(file)
+    setFileInput(input, compressed)
     const reader = new FileReader()
     reader.onload = (ev) => setImagePreview(ev.target?.result as string)
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(compressed)
   }
 
   const addTag = () => {
@@ -348,9 +363,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
           </section>
 
           <div className="flex gap-3 pt-2">
-            <button type="submit" className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-              投稿する
-            </button>
+            <SubmitButton />
           </div>
           <p className="text-xs text-gray-400 text-center">* は必須項目です</p>
         </form>

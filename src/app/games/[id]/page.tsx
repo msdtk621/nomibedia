@@ -1,4 +1,5 @@
 import { getGame, getComments } from '@/lib/db'
+import { postComment } from '@/app/actions/comment'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -231,7 +232,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
 
         <HangoverBanner />
 
-        <CommentSection gameId={id} initialComments={gameComments} />
+        <CommentSection initialComments={gameComments} onSubmit={postComment.bind(null, id)} />
       </div>
       <RankingSidebar />
     </div>

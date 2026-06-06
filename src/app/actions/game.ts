@@ -90,7 +90,13 @@ export async function deleteGame(gameId: string, authorId: string) {
   const supabase = await createServerSupabaseClient()
   const { data: game } = await supabase.from('games').select('author_id').eq('id', gameId).single()
   if (!game || game.author_id !== authorId) throw new Error('削除権限がありません')
-  await supabase.from('games').delete().eq('id', gameId)
+  // 本人確認済みなので管理者権限で削除（anonキーはRLSで削除がブロックされるため）
+  const admin = createAdminSupabaseClient()
+  await admin.from('reports').delete().eq('game_id', gameId)
+  await admin.from('comments').delete().eq('game_id', gameId)
+  await admin.from('game_tags').delete().eq('game_id', gameId)
+  await admin.from('likes').delete().eq('game_id', gameId)
+  await admin.from('games').delete().eq('id', gameId)
   redirect('/')
 }
 

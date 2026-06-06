@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useTransition, useRef } from 'react'
-import { postComment } from '@/app/actions/comment'
 
 type Comment = {
   id: string
-  game_id: string
+  game_id?: string
   number: number
   author_name: string
   author_id: string
@@ -84,7 +83,13 @@ function CommentItem({
   )
 }
 
-export default function CommentSection({ gameId, initialComments }: { gameId: string; initialComments: Comment[] }) {
+export default function CommentSection({
+  initialComments,
+  onSubmit,
+}: {
+  initialComments: Comment[]
+  onSubmit: (name: string, content: string, replyTo: number | null) => Promise<void>
+}) {
   const [comments, setComments] = useState<Comment[]>(initialComments)
   const [content, setContent] = useState('')
   const [name, setName] = useState('名無しさん@〜ぽん')
@@ -106,7 +111,6 @@ export default function CommentSection({ gameId, initialComments }: { gameId: st
 
     const optimistic: Comment = {
       id: String(Date.now()),
-      game_id: gameId,
       number: comments.length + 1,
       author_name: name || '名無しさん@〜ぽん',
       author_id: '...',
@@ -116,13 +120,13 @@ export default function CommentSection({ gameId, initialComments }: { gameId: st
     }
     setComments(prev => [...prev, optimistic])
     const saved = content.trim()
-    const savedName = name
+    const savedName = name || '名無しさん@〜ぽん'
     const savedReplyTo = replyTo
     setContent('')
     setReplyTo(null)
 
     startTransition(async () => {
-      await postComment(gameId, savedName, saved, savedReplyTo)
+      await onSubmit(savedName, saved, savedReplyTo)
     })
   }
 

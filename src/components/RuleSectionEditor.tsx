@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import Image from 'next/image'
 import EmojiPicker from './EmojiPicker'
+import { compressImage, setFileInput } from '@/lib/compressImage'
 
 export type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number; rotation?: number }
 
@@ -44,13 +45,16 @@ export default function RuleSectionEditor({
     onChange(sections.filter(s => s.id !== id))
   }
 
-  const handleImage = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 5 * 1024 * 1024) { alert('画像は5MB以下にしてください'); return }
+    const input = e.target
+    // 大きな写真は自動で縮小・圧縮して送信用に書き戻す
+    const compressed = await compressImage(file)
+    setFileInput(input, compressed)
     const reader = new FileReader()
-    reader.onload = ev => update(id, { imageFile: file, imagePreview: ev.target?.result as string })
-    reader.readAsDataURL(file)
+    reader.onload = ev => update(id, { imageFile: compressed, imagePreview: ev.target?.result as string })
+    reader.readAsDataURL(compressed)
   }
 
   return (
