@@ -2,13 +2,16 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { asset } from '@/lib/asset'
 
 export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) {
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+  // 投稿ページ・編集ページでは誤タップ防止のため投稿ボタンを隠す
+  const hidePostButton = pathname === '/post' || pathname.endsWith('/edit')
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,10 +75,12 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </button>
-          <Link href="/post" className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium whitespace-nowrap">
-            <span className="hidden sm:inline">ゲームを投稿する</span>
-            <span className="sm:hidden">投稿</span>
-          </Link>
+          {!hidePostButton && (
+            <Link href="/post" className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium whitespace-nowrap">
+              <span className="hidden sm:inline">ゲームを投稿する</span>
+              <span className="sm:hidden">投稿</span>
+            </Link>
+          )}
         </div>
       </div>
 
