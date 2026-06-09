@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import MobileLayout from '@/components/MobileLayout'
@@ -31,6 +31,19 @@ export const metadata: Metadata = {
   verification: process.env.GOOGLE_SITE_VERIFICATION
     ? { google: process.env.GOOGLE_SITE_VERIFICATION }
     : undefined,
+  appleWebApp: {
+    capable: true,
+    title: 'ノミベディア',
+    statusBarStyle: 'default',
+  },
+  icons: {
+    icon: '/icon-192x192.png',
+    apple: '/apple-icon.png',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#2563eb',
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
