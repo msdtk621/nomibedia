@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import PushToggle from '@/components/PushToggle'
 
 const SEEN_KEY = 'nomibedia_admin_seen'
 
@@ -50,6 +51,7 @@ export default function AdminDashboard({
 
   return (
     <div className="space-y-3">
+      <PushToggle />
       <Card
         href={`/admin/reports${q}`}
         emoji="🚨"

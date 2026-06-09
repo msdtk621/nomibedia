@@ -2,6 +2,7 @@
 
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { revalidatePath } from 'next/cache'
+import { sendAdminPush } from '@/lib/push'
 
 export type BoardGame = {
   id: string
@@ -90,11 +91,14 @@ export async function addBoardGameComment(boardGameId: string, authorName: strin
 // 一般ユーザーからのボドゲ追加リクエスト
 export async function submitBoardGameRequest(name: string, comment: string) {
   if (!name.trim()) return
-  const supabase = await createServerSupabaseClient()
-  await supabase.from('board_game_requests').insert({
-    name: name.trim().slice(0, 100),
+  // board_game_requests は anon の INSERT が RLS でブロックされるため管理者権限で保存
+  const admin = createAdminSupabaseClient()
+  const reqName = name.trim().slice(0, 100)
+  await admin.from('board_game_requests').insert({
+    name: reqName,
     comment: comment.trim().slice(0, 300) || null,
   })
+  await sendAdminPush('新しいボドゲリクエスト', `「${reqName}」のリクエストが届きました`, '/admin')
 }
 
 // 管理者：ボドゲ追加
