@@ -1,8 +1,9 @@
 'use server'
 
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createAdminSupabaseClient } from '@/lib/supabase-server'
 
 export async function reportGame(gameId: string, reason: string) {
-  const supabase = await createServerSupabaseClient()
-  await supabase.from('reports').insert({ game_id: gameId, reason })
+  // reports テーブルは anon の INSERT が RLS でブロックされるため管理者権限で保存する
+  const admin = createAdminSupabaseClient()
+  await admin.from('reports').insert({ game_id: gameId, reason })
 }
