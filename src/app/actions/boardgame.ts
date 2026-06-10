@@ -21,27 +21,35 @@ function verifyAdmin(key: string) {
 }
 
 export async function voteBoardGame(boardGameId: string, voterId: string) {
-  const supabase = await createServerSupabaseClient()
+  // board_games の票数更新は anon が RLS でブロックされ、増減RPCも未定義のため
+  // 管理者権限で投票を反映し、票数は実際の投票行数から再計算して保存する。
+  const admin = createAdminSupabaseClient()
 
   // すでに投票済みかチェック
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from('board_game_votes')
     .select('id')
     .eq('board_game_id', boardGameId)
     .eq('voter_id', voterId)
-    .single()
+    .maybeSingle()
 
+  let voted: boolean
   if (existing) {
-    // 取り消し
-    await supabase.from('board_game_votes').delete().eq('id', existing.id)
-    await supabase.rpc('decrement_board_game_vote', { game_id: boardGameId })
-    return { voted: false }
+    await admin.from('board_game_votes').delete().eq('id', existing.id)
+    voted = false
   } else {
-    // 投票
-    await supabase.from('board_game_votes').insert({ board_game_id: boardGameId, voter_id: voterId })
-    await supabase.rpc('increment_board_game_vote', { game_id: boardGameId })
-    return { voted: true }
+    await admin.from('board_game_votes').insert({ board_game_id: boardGameId, voter_id: voterId })
+    voted = true
   }
+
+  // 実際の投票数を数えて vote_count に保存（ズレても自動で正しい値に修正される）
+  const { count } = await admin
+    .from('board_game_votes')
+    .select('id', { count: 'exact', head: true })
+    .eq('board_game_id', boardGameId)
+  await admin.from('board_games').update({ vote_count: count ?? 0 }).eq('id', boardGameId)
+
+  return { voted }
 }
 
 export async function getBoardGames() {
