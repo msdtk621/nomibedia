@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { useFormStatus } from 'react-dom'
 import Image from 'next/image'
 import Link from 'next/link'
 import { postGame } from '@/app/actions/game'
@@ -9,6 +8,7 @@ import { categoryImages } from '@/lib/categoryImages'
 import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
 import { asset } from '@/lib/asset'
 import { compressImage, setFileInput } from '@/lib/compressImage'
+import { SubmitButton, FormPendingOverlay } from '@/components/SubmitButton'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -26,19 +26,6 @@ function generateAuthorId() {
   return Math.random().toString(36).slice(2, 10)
 }
 
-// 送信中はボタンを無効化して二重投稿を防ぐ
-function SubmitButton() {
-  const { pending } = useFormStatus()
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {pending ? '投稿中…' : '投稿する'}
-    </button>
-  )
-}
 
 export default function PostForm({ categories }: { categories: Category[] }) {
   const [authorId] = useState(() => generateAuthorId())
@@ -363,9 +350,10 @@ export default function PostForm({ categories }: { categories: Category[] }) {
           </section>
 
           <div className="flex gap-3 pt-2">
-            <SubmitButton />
+            <SubmitButton idleLabel="投稿する" pendingLabel="投稿中…" className="flex-1" />
           </div>
           <p className="text-xs text-gray-400 text-center">* は必須項目です</p>
+          <FormPendingOverlay label="投稿中…" />
         </form>
       </div>
     </div>

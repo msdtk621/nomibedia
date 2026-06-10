@@ -9,6 +9,7 @@ import { asset } from '@/lib/asset'
 import { type Game } from '@/lib/types'
 import RuleSectionEditor, { createRuleSection, type RuleSection } from '@/components/RuleSectionEditor'
 import { compressImage, setFileInput } from '@/lib/compressImage'
+import { SubmitButton, FormPendingOverlay } from '@/components/SubmitButton'
 
 type Category = { id: string; slug: string; icon: string; name: string }
 
@@ -352,10 +353,9 @@ export default function EditForm({ game, categories }: { game: Game; categories:
             <Link href={`/games/${game.id as string}`} className="flex-1 py-3 border border-gray-300 text-gray-600 font-medium rounded-lg hover:bg-gray-50 transition-colors text-center">
               キャンセル
             </Link>
-            <button type="submit" className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-              保存する
-            </button>
+            <SubmitButton idleLabel="保存する" pendingLabel="保存中…" className="flex-1" />
           </div>
+          <FormPendingOverlay label="保存中…" />
         </form>
       </div>
     </div>
