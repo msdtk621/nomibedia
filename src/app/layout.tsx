@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import MobileLayout from '@/components/MobileLayout'
 import Footer from '@/components/Footer'
@@ -52,6 +53,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="ja">
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8713761965517511"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={`${geist.className} bg-gray-50`}>
         <MobileLayout categories={categories} notices={notices}>
           {children}

@@ -29,9 +29,23 @@ export type ItemKeywordLink = {
   url: string // 物販検索/商品アフィリンク
 }
 
+// 楽天アフィリエイトID
+const RAKUTEN_AFFILIATE_ID = '54c2f9c9.71a0e1e0.54c2f9ca.90f64422'
+
+// 楽天市場の検索結果へのアフィリエイトリンクを生成
+function rakutenSearch(keyword: string): string {
+  const url = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`
+  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(url)}`
+}
+
 // ① サイドバー「飲み会おすすめグッズ」用の厳選商品（Amazon/楽天/もしも）
 // 例: { id: 'dice', name: 'カラフルサイコロ12個セット', url: 'https://...', price: '¥780', tag: 'サイコロ' },
-export const recommendedGoods: AffiliateGood[] = []
+export const recommendedGoods: AffiliateGood[] = [
+  { id: 'supplement', name: '二日酔い対策サプリを探す', url: rakutenSearch('二日酔い サプリメント'), tag: '🍺 飲む前・飲んだ後に' },
+  { id: 'cardgame', name: 'パーティーカードゲームを探す', url: rakutenSearch('カードゲーム パーティー 大人'), tag: '🃏 盛り上がる定番' },
+  { id: 'boardgame', name: '飲み会向けボードゲームを探す', url: rakutenSearch('ボードゲーム 飲み会'), tag: '🎲 夜中まで楽しむ' },
+  { id: 'goods', name: '飲み会グッズ・おもしろアイテムを探す', url: rakutenSearch('飲み会グッズ パーティー'), tag: '🥤 コップ・罰ゲーム用' },
+]
 
 // ② 二日酔い対策バナー（A8.net）
 // 例: { href: 'https://px.a8.net/svt/ejp?a8mat=...', text: '飲んだ後の強い味方｜ウコンの力', imgSrc: 'https://www25.a8.net/...' },
