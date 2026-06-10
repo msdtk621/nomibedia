@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useRef } from 'react'
+import { useState, useTransition, useRef, useEffect } from 'react'
 
 type Comment = {
   id: string
@@ -98,6 +98,14 @@ export default function CommentSection({
   const [isPending, startTransition] = useTransition()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // この端末で前回使った名前を覚えておき、次回から自動で入れる
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('nomibedia_comment_name')
+      if (saved) setName(saved)
+    } catch {}
+  }, [])
+
   const getComment = (n: number) => comments.find(c => c.number === n) ?? null
 
   const handleReply = (n: number) => {
@@ -121,6 +129,8 @@ export default function CommentSection({
     setComments(prev => [...prev, optimistic])
     const saved = content.trim()
     const savedName = name || '名無しさん@〜ぽん'
+    // 入力した名前をこの端末に記憶（次回から自動で入る）
+    try { localStorage.setItem('nomibedia_comment_name', savedName) } catch {}
     const savedReplyTo = replyTo
     setContent('')
     setReplyTo(null)
