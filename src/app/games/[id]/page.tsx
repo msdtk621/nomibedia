@@ -14,6 +14,7 @@ import FavoriteButton from '@/components/FavoriteButton'
 import ShareButtons from '@/components/ShareButtons'
 import RequiredItems from '@/components/RequiredItems'
 import HangoverBanner from '@/components/HangoverBanner'
+import RecommendedGoods from '@/components/RecommendedGoods'
 
 export const revalidate = 0
 
@@ -231,6 +232,11 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
         </div>
 
         <HangoverBanner />
+
+        {/* モバイル用おすすめグッズ（PCはサイドバーに表示されるため非表示） */}
+        <div className="lg:hidden mb-4">
+          <RecommendedGoods />
+        </div>
 
         <CommentSection initialComments={gameComments} onSubmit={postComment.bind(null, id)} />
       </div>

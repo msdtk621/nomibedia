@@ -1,5 +1,6 @@
 import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
+import RecommendedGoods from '@/components/RecommendedGoods'
 import { getGames, getCategories } from '@/lib/db'
 import Link from 'next/link'
 import { getCategoryImage } from '@/lib/categoryImages'
@@ -122,6 +123,11 @@ export default async function Home({
             ))}
           </div>
         )}
+
+        {/* モバイル用おすすめグッズ（PCはサイドバーに表示されるため非表示） */}
+        <div className="lg:hidden">
+          <RecommendedGoods />
+        </div>
       </div>
       <RankingSidebar />
     </div>
