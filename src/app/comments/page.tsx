@@ -11,7 +11,7 @@ export default async function CommentsPage() {
 
   const { data: comments } = await supabase
     .from('comments')
-    .select('*, game:games(id, title, category:categories(name, icon, slug))')
+    .select('*, game:games(id, title, thumbnail_url, category:categories(name, icon, slug))')
     .order('created_at', { ascending: false })
     .limit(50)
 
@@ -46,7 +46,7 @@ export default async function CommentsPage() {
         ) : (
           <div className="space-y-3">
             {recentGames?.map((c) => {
-              const game = c.game as { id: string; title: string; category: { name: string; icon: string; slug: string } | null } | null
+              const game = c.game as { id: string; title: string; thumbnail_url: string | null; category: { name: string; icon: string; slug: string } | null } | null
               if (!game) return null
               return (
                 <Link key={game.id} href={`/games/${game.id}`}
@@ -54,7 +54,7 @@ export default async function CommentsPage() {
                   <div className="flex gap-3">
                     <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={getCategoryImage(game.category?.slug)} alt={game.category?.name ?? ''} className="w-full h-full object-cover" />
+                      <img src={game.thumbnail_url ?? getCategoryImage(game.category?.slug)} alt={game.category?.name ?? ''} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-purple-600 mb-1">{game.category?.name}</div>
