@@ -53,15 +53,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="ja">
-      <head>
+      <body className={`${geist.className} bg-gray-50`}>
+        {/* App Routerでは手動の<head>はNG（hydrationが壊れ全クライアントJSが死ぬ）。
+            afterInteractiveのScriptはbody内に置けばNextが適切に読み込む */}
         <Script
-          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8713761965517511"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-      </head>
-      <body className={`${geist.className} bg-gray-50`}>
         <MobileLayout categories={categories} notices={notices}>
           {children}
           <Footer />
