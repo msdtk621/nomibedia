@@ -1,42 +1,7 @@
-import { recommendedGoods, hasGoods, AFFILIATE_REL, AffiliateGood } from '@/lib/affiliate'
+import { recommendedGoods, hasGoods, AFFILIATE_REL } from '@/lib/affiliate'
 
-// ストアごとの見出し設定
-const STORES: { key: AffiliateGood['store']; label: string; accent: string }[] = [
-  { key: 'rakuten', label: '楽天市場で探す', accent: 'text-[#bf0000]' },
-  { key: 'amazon', label: 'Amazonで探す', accent: 'text-[#ff9900]' },
-]
-
-function GoodsLinks({ goods }: { goods: AffiliateGood[] }) {
-  return (
-    <div className="space-y-3">
-      {goods.map(g => (
-        <a
-          key={g.id}
-          href={g.url}
-          target="_blank"
-          rel={AFFILIATE_REL}
-          className="flex gap-2 hover:bg-gray-50 rounded-lg p-1 -m-1"
-        >
-          <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden flex items-center justify-center">
-            {g.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={g.imageUrl} alt={g.name} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-lg">🛒</span>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            {g.tag && <div className="text-xs text-amber-600 truncate">{g.tag}</div>}
-            <div className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug">{g.name}</div>
-            {g.price && <div className="text-xs text-gray-500 mt-0.5">{g.price}</div>}
-          </div>
-        </a>
-      ))}
-    </div>
-  )
-}
-
-// サイドバー「飲み会おすすめグッズ」枠。楽天／Amazonを見出しで分けて表示。商品が未登録なら何も描画しない。
+// サイドバー「飲み会おすすめグッズ」枠。商品ごとに [楽天][Amazon] のリンクボタンを並べる。
+// 商品が未登録なら何も描画しない。
 export default function RecommendedGoods() {
   if (!hasGoods) return null
 
@@ -46,19 +11,45 @@ export default function RecommendedGoods() {
         <h3 className="font-bold text-gray-900">飲み会おすすめグッズ</h3>
         <span className="text-[10px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded">PR</span>
       </div>
-      <div className="space-y-5">
-        {STORES.map(store => {
-          const goods = recommendedGoods.filter(g => g.store === store.key)
-          if (goods.length === 0) return null
-          return (
-            <div key={store.key}>
-              <div className={`text-xs font-bold ${store.accent} mb-2 pb-1 border-b border-gray-100`}>
-                {store.label}
-              </div>
-              <GoodsLinks goods={goods} />
+      <div className="space-y-4">
+        {recommendedGoods.map(g => (
+          <div key={g.id} className="flex gap-2">
+            <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden flex items-center justify-center">
+              {g.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={g.imageUrl} alt={g.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-lg">🛒</span>
+              )}
             </div>
-          )
-        })}
+            <div className="flex-1 min-w-0">
+              {g.tag && <div className="text-xs text-amber-600 truncate">{g.tag}</div>}
+              <div className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug mb-1.5">{g.name}</div>
+              <div className="flex gap-1.5">
+                {g.rakutenUrl && (
+                  <a
+                    href={g.rakutenUrl}
+                    target="_blank"
+                    rel={AFFILIATE_REL}
+                    className="flex-1 text-center text-xs font-bold text-white bg-[#bf0000] hover:bg-[#a00000] rounded py-1 transition-colors"
+                  >
+                    楽天
+                  </a>
+                )}
+                {g.amazonUrl && (
+                  <a
+                    href={g.amazonUrl}
+                    target="_blank"
+                    rel={AFFILIATE_REL}
+                    className="flex-1 text-center text-xs font-bold text-gray-900 bg-[#ff9900] hover:bg-[#e88a00] rounded py-1 transition-colors"
+                  >
+                    Amazon
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
