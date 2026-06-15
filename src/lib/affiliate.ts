@@ -11,6 +11,7 @@ export type AffiliateGood = {
   id: string
   name: string
   url: string // アフィリエイトリンク（Amazon/楽天/もしも 等）
+  store: 'rakuten' | 'amazon' // どのストアの検索リンクか（見出し分け用）
   imageUrl?: string // 商品画像URL（任意）
   price?: string // 表示用価格テキスト（任意・例: "¥780"）
   tag?: string // ラベル（任意・例: "サイコロ"）
@@ -45,16 +46,17 @@ function amazonSearch(keyword: string): string {
   return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}&tag=${AMAZON_ASSOCIATE_TAG}`
 }
 
-// ① サイドバー「飲み会おすすめグッズ」用の厳選商品（カテゴリごとに楽天→Amazonの順）
+// ① サイドバー「飲み会おすすめグッズ」用の厳選商品。
+//    store でストアを判別し、コンポーネント側で「楽天市場で探す」「Amazonで探す」の見出しに分けて表示する。
 export const recommendedGoods: AffiliateGood[] = [
-  { id: 'supplement-rakuten', name: '二日酔い対策サプリを探す', url: rakutenSearch('二日酔い サプリメント'), tag: '🍺 楽天市場で探す' },
-  { id: 'supplement-amazon', name: '二日酔い対策サプリを探す', url: amazonSearch('二日酔い サプリメント'), tag: '🍺 Amazonで探す' },
-  { id: 'cardgame-rakuten', name: 'パーティーカードゲームを探す', url: rakutenSearch('カードゲーム パーティー 大人'), tag: '🃏 楽天市場で探す' },
-  { id: 'cardgame-amazon', name: 'パーティーカードゲームを探す', url: amazonSearch('カードゲーム パーティー 大人'), tag: '🃏 Amazonで探す' },
-  { id: 'boardgame-rakuten', name: '飲み会向けボードゲームを探す', url: rakutenSearch('ボードゲーム 飲み会'), tag: '🎲 楽天市場で探す' },
-  { id: 'boardgame-amazon', name: '飲み会向けボードゲームを探す', url: amazonSearch('ボードゲーム 飲み会'), tag: '🎲 Amazonで探す' },
-  { id: 'goods-rakuten', name: '飲み会グッズ・おもしろアイテムを探す', url: rakutenSearch('飲み会グッズ パーティー'), tag: '🥤 楽天市場で探す' },
-  { id: 'goods-amazon', name: '飲み会グッズ・おもしろアイテムを探す', url: amazonSearch('飲み会グッズ パーティー'), tag: '🥤 Amazonで探す' },
+  { id: 'supplement-rakuten', store: 'rakuten', name: '二日酔い対策サプリ', url: rakutenSearch('二日酔い サプリメント'), tag: '🍺 飲む前・飲んだ後に' },
+  { id: 'cardgame-rakuten', store: 'rakuten', name: 'パーティーカードゲーム', url: rakutenSearch('カードゲーム パーティー 大人'), tag: '🃏 盛り上がる定番' },
+  { id: 'boardgame-rakuten', store: 'rakuten', name: '飲み会向けボードゲーム', url: rakutenSearch('ボードゲーム 飲み会'), tag: '🎲 夜中まで楽しむ' },
+  { id: 'goods-rakuten', store: 'rakuten', name: '飲み会グッズ・おもしろアイテム', url: rakutenSearch('飲み会グッズ パーティー'), tag: '🥤 コップ・罰ゲーム用' },
+  { id: 'supplement-amazon', store: 'amazon', name: '二日酔い対策サプリ', url: amazonSearch('二日酔い サプリメント'), tag: '🍺 飲む前・飲んだ後に' },
+  { id: 'cardgame-amazon', store: 'amazon', name: 'パーティーカードゲーム', url: amazonSearch('カードゲーム パーティー 大人'), tag: '🃏 盛り上がる定番' },
+  { id: 'boardgame-amazon', store: 'amazon', name: '飲み会向けボードゲーム', url: amazonSearch('ボードゲーム 飲み会'), tag: '🎲 夜中まで楽しむ' },
+  { id: 'goods-amazon', store: 'amazon', name: '飲み会グッズ・おもしろアイテム', url: amazonSearch('飲み会グッズ パーティー'), tag: '🥤 コップ・罰ゲーム用' },
 ]
 
 // ② 二日酔い対策バナー（A8.net）
