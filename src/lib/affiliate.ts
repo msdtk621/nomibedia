@@ -31,6 +31,8 @@ export type ItemKeywordLink = {
 
 // 楽天アフィリエイトID
 const RAKUTEN_AFFILIATE_ID = '54c2f9c9.71a0e1e0.54c2f9ca.90f64422'
+// AmazonアソシエイトID
+const AMAZON_ASSOCIATE_TAG = 'nomibedia-22'
 
 // 楽天市場の検索結果へのアフィリエイトリンクを生成
 function rakutenSearch(keyword: string): string {
@@ -38,13 +40,21 @@ function rakutenSearch(keyword: string): string {
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(url)}`
 }
 
-// ① サイドバー「飲み会おすすめグッズ」用の厳選商品（Amazon/楽天/もしも）
-// 例: { id: 'dice', name: 'カラフルサイコロ12個セット', url: 'https://...', price: '¥780', tag: 'サイコロ' },
+// Amazonの検索結果へのアフィリエイトリンクを生成
+function amazonSearch(keyword: string): string {
+  return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}&tag=${AMAZON_ASSOCIATE_TAG}`
+}
+
+// ① サイドバー「飲み会おすすめグッズ」用の厳選商品（カテゴリごとに楽天→Amazonの順）
 export const recommendedGoods: AffiliateGood[] = [
-  { id: 'supplement', name: '二日酔い対策サプリを探す', url: rakutenSearch('二日酔い サプリメント'), tag: '🍺 飲む前・飲んだ後に' },
-  { id: 'cardgame', name: 'パーティーカードゲームを探す', url: rakutenSearch('カードゲーム パーティー 大人'), tag: '🃏 盛り上がる定番' },
-  { id: 'boardgame', name: '飲み会向けボードゲームを探す', url: rakutenSearch('ボードゲーム 飲み会'), tag: '🎲 夜中まで楽しむ' },
-  { id: 'goods', name: '飲み会グッズ・おもしろアイテムを探す', url: rakutenSearch('飲み会グッズ パーティー'), tag: '🥤 コップ・罰ゲーム用' },
+  { id: 'supplement-rakuten', name: '二日酔い対策サプリを探す', url: rakutenSearch('二日酔い サプリメント'), tag: '🍺 楽天市場で探す' },
+  { id: 'supplement-amazon', name: '二日酔い対策サプリを探す', url: amazonSearch('二日酔い サプリメント'), tag: '🍺 Amazonで探す' },
+  { id: 'cardgame-rakuten', name: 'パーティーカードゲームを探す', url: rakutenSearch('カードゲーム パーティー 大人'), tag: '🃏 楽天市場で探す' },
+  { id: 'cardgame-amazon', name: 'パーティーカードゲームを探す', url: amazonSearch('カードゲーム パーティー 大人'), tag: '🃏 Amazonで探す' },
+  { id: 'boardgame-rakuten', name: '飲み会向けボードゲームを探す', url: rakutenSearch('ボードゲーム 飲み会'), tag: '🎲 楽天市場で探す' },
+  { id: 'boardgame-amazon', name: '飲み会向けボードゲームを探す', url: amazonSearch('ボードゲーム 飲み会'), tag: '🎲 Amazonで探す' },
+  { id: 'goods-rakuten', name: '飲み会グッズ・おもしろアイテムを探す', url: rakutenSearch('飲み会グッズ パーティー'), tag: '🥤 楽天市場で探す' },
+  { id: 'goods-amazon', name: '飲み会グッズ・おもしろアイテムを探す', url: amazonSearch('飲み会グッズ パーティー'), tag: '🥤 Amazonで探す' },
 ]
 
 // ② 二日酔い対策バナー（A8.net）
