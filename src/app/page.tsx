@@ -1,6 +1,7 @@
 import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
 import RecommendedGoods from '@/components/RecommendedGoods'
+import AppPromo from '@/components/AppPromo'
 import { getGames, getCategories } from '@/lib/db'
 import Link from 'next/link'
 import { getCategoryImage } from '@/lib/categoryImages'
@@ -78,6 +79,8 @@ export default async function Home({
             </div>
           </section>
         )}
+
+        {showHero && <AppPromo />}
 
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900 mb-3">
