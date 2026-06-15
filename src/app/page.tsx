@@ -36,7 +36,7 @@ export default async function Home({
             {/* ヒーロー画像＋キャッチコピー */}
             <div className="text-center mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={asset("/hero.jpeg")} alt="ノミベディア" className="w-56 h-56 md:w-64 md:h-64 object-contain mx-auto" />
+              <img src={asset("/hero.png")} alt="ノミベディア" className="w-56 h-56 md:w-64 md:h-64 object-contain mx-auto" />
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 -mt-2">
                 飲みの場を<span className="text-amber-400">もっと</span>楽しく！
               </h1>
