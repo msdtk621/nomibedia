@@ -4,7 +4,8 @@ import Link from 'next/link'
 import RankingSidebar from '@/components/RankingSidebar'
 import CommentSection from '@/components/CommentSection'
 import BoardGameVoteButton from '@/components/BoardGameVoteButton'
-import { AFFILIATE_REL } from '@/lib/affiliate'
+import ShopButtons from '@/components/ShopButtons'
+import { amazonSearch, rakutenSearch, hasAmazon, hasRakuten } from '@/lib/affiliate'
 
 export const revalidate = 0
 
@@ -23,7 +24,10 @@ export default async function BoardGameDetailPage({ params }: { params: Promise<
   const [bg, comments] = await Promise.all([getBoardGame(id), getBoardGameComments(id)])
   if (!bg) notFound()
 
-  const hasAffiliate = bg.affiliate_amazon || bg.affiliate_rakuten
+  // 個別アフィリンクがあれば優先、無ければ商品名で検索リンクにフォールバック
+  const amazonUrl = bg.affiliate_amazon || (hasAmazon ? amazonSearch(bg.name) : null)
+  const rakutenUrl = bg.affiliate_rakuten || (hasRakuten ? rakutenSearch(bg.name) : null)
+  const hasAffiliate = amazonUrl || rakutenUrl
 
   return (
     <div className="flex gap-6 p-3 md:p-6">
@@ -63,20 +67,12 @@ export default async function BoardGameDetailPage({ params }: { params: Promise<
               <h2 className="font-bold text-gray-900">購入はこちら</h2>
               <span className="text-[10px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded">PR</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
-              {bg.affiliate_amazon && (
-                <a href={bg.affiliate_amazon} target="_blank" rel={AFFILIATE_REL}
-                  className="flex-1 text-center px-4 py-3 bg-[#FF9900] text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
-                  Amazonで見る
-                </a>
-              )}
-              {bg.affiliate_rakuten && (
-                <a href={bg.affiliate_rakuten} target="_blank" rel={AFFILIATE_REL}
-                  className="flex-1 text-center px-4 py-3 bg-[#BF0000] text-white font-bold rounded-lg hover:opacity-90 transition-opacity">
-                  楽天で見る
-                </a>
-              )}
-            </div>
+            <ShopButtons
+              keyword={bg.name}
+              amazonUrl={bg.affiliate_amazon}
+              rakutenUrl={bg.affiliate_rakuten}
+              size="lg"
+            />
             <p className="text-[11px] text-gray-400 mt-2">※当サイトはアフィリエイトプログラムを利用しています。</p>
           </div>
         )}

@@ -32,19 +32,23 @@ export type ItemKeywordLink = {
 
 // 楽天アフィリエイトID
 const RAKUTEN_AFFILIATE_ID = '54c2f9c9.71a0e1e0.54c2f9ca.90f64422'
-// AmazonアソシエイトID
+// AmazonアソシエイトID（StoreID）。未設定('')ならAmazonボタンは自動で非表示。
 const AMAZON_ASSOCIATE_TAG = 'nomibedia-22'
 
 // 楽天市場の検索結果へのアフィリエイトリンクを生成
-function rakutenSearch(keyword: string): string {
+export function rakutenSearch(keyword: string): string {
   const url = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(url)}`
 }
 
 // Amazonの検索結果へのアフィリエイトリンクを生成
-function amazonSearch(keyword: string): string {
+export function amazonSearch(keyword: string): string {
   return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}&tag=${AMAZON_ASSOCIATE_TAG}`
 }
+
+// 各ショップのアフィリエイトが有効か（IDが入っていれば true）
+export const hasRakuten = RAKUTEN_AFFILIATE_ID.length > 0
+export const hasAmazon = AMAZON_ASSOCIATE_TAG.length > 0
 
 // ① サイドバー「飲み会おすすめグッズ」用の厳選商品。
 //    1商品につき楽天・Amazonの両方のリンクを持たせ、コンポーネント側で [楽天][Amazon] のボタンを並べる。
