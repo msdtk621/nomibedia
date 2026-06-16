@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { addBoardGame, deleteBoardGame, deleteBoardGameRequest } from '@/app/actions/boardgame'
+import { addBoardGame, deleteBoardGame, deleteBoardGameRequest, updateBoardGameAffiliate } from '@/app/actions/boardgame'
 
 type BoardGame = {
   id: string; name: string; description: string | null; vote_count: number
@@ -14,6 +14,18 @@ export default function BoardGamesAdmin({
 }: { games: BoardGame[]; requests: Request[]; adminKey: string }) {
   const [isPending, startTransition] = useTransition()
   const [form, setForm] = useState({ name: '', description: '', imageUrl: '', amazon: '', rakuten: '' })
+  // 既存ボドゲのアフィリンク編集
+  const [editId, setEditId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState({ amazon: '', rakuten: '' })
+
+  const startEdit = (g: BoardGame) => {
+    setEditId(g.id)
+    setEditForm({ amazon: g.affiliate_amazon ?? '', rakuten: g.affiliate_rakuten ?? '' })
+  }
+  const handleUpdate = (id: string) => startTransition(async () => {
+    await updateBoardGameAffiliate(adminKey, id, editForm)
+    setEditId(null)
+  })
 
   const handleAdd = () => {
     if (!form.name.trim()) return
@@ -53,19 +65,42 @@ export default function BoardGamesAdmin({
         <h2 className="font-bold text-gray-900 mb-3">登録済み（{games.length}件）</h2>
         <div className="space-y-2">
           {games.map(g => (
-            <div key={g.id} className="bg-white border border-gray-200 rounded-lg p-3 flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-100 rounded shrink-0 overflow-hidden flex items-center justify-center">
-                {g.image_url ? <img src={g.image_url} alt="" className="w-full h-full object-cover" /> : <span>🎲</span>}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-gray-900 truncate">{g.name} <span className="text-xs text-gray-400">👍{g.vote_count}</span></div>
-                <div className="text-xs text-gray-400">
-                  {g.affiliate_amazon ? 'Amazon✓ ' : ''}{g.affiliate_rakuten ? '楽天✓' : ''}
-                  {!g.affiliate_amazon && !g.affiliate_rakuten ? 'アフィ未設定' : ''}
+            <div key={g.id} className="bg-white border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-100 rounded shrink-0 overflow-hidden flex items-center justify-center">
+                  {g.image_url ? <img src={g.image_url} alt="" className="w-full h-full object-cover" /> : <span>🎲</span>}
                 </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-900 truncate">{g.name} <span className="text-xs text-gray-400">👍{g.vote_count}</span></div>
+                  <div className="text-xs text-gray-400">
+                    {g.affiliate_amazon ? 'Amazon✓ ' : ''}{g.affiliate_rakuten ? '楽天✓' : ''}
+                    {!g.affiliate_amazon && !g.affiliate_rakuten ? 'アフィ未設定（商品名で検索リンク）' : ''}
+                  </div>
+                </div>
+                <button onClick={() => (editId === g.id ? setEditId(null) : startEdit(g))} disabled={isPending}
+                  className="text-xs text-blue-600 border border-blue-200 rounded px-2 py-1 hover:bg-blue-50 shrink-0">
+                  {editId === g.id ? '閉じる' : 'アフィ編集'}
+                </button>
+                <button onClick={() => handleDelete(g.id)} disabled={isPending}
+                  className="text-xs text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 shrink-0">削除</button>
               </div>
-              <button onClick={() => handleDelete(g.id)} disabled={isPending}
-                className="text-xs text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 shrink-0">削除</button>
+
+              {editId === g.id && (
+                <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
+                  <input className={input} placeholder="Amazonアフィリンク（空欄で検索リンクに戻る）"
+                    value={editForm.amazon} onChange={e => setEditForm({ ...editForm, amazon: e.target.value })} />
+                  <input className={input} placeholder="楽天アフィリンク（空欄で検索リンクに戻る）"
+                    value={editForm.rakuten} onChange={e => setEditForm({ ...editForm, rakuten: e.target.value })} />
+                  <div className="flex justify-end gap-2">
+                    <button onClick={() => setEditId(null)} disabled={isPending}
+                      className="px-4 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">キャンセル</button>
+                    <button onClick={() => handleUpdate(g.id)} disabled={isPending}
+                      className="px-4 py-1.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                      {isPending ? '保存中…' : '保存'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
