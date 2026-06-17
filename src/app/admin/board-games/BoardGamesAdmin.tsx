@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { addBoardGame, deleteBoardGame, deleteBoardGameRequest, updateBoardGameAffiliate } from '@/app/actions/boardgame'
+import { addBoardGame, deleteBoardGame, deleteBoardGameRequest, updateBoardGameAffiliate, fetchRakutenForBoardGame } from '@/app/actions/boardgame'
 
 type BoardGame = {
   id: string; name: string; description: string | null; vote_count: number
@@ -17,14 +17,25 @@ export default function BoardGamesAdmin({
   // 既存ボドゲのアフィリンク編集
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({ amazon: '', rakuten: '' })
+  // 楽天自動取得用のキーワードと結果メッセージ
+  const [rakutenKeyword, setRakutenKeyword] = useState('')
+  const [rakutenMsg, setRakutenMsg] = useState('')
 
   const startEdit = (g: BoardGame) => {
     setEditId(g.id)
     setEditForm({ amazon: g.affiliate_amazon ?? '', rakuten: g.affiliate_rakuten ?? '' })
+    setRakutenKeyword(`${g.name} ボードゲーム`)
+    setRakutenMsg('')
   }
   const handleUpdate = (id: string) => startTransition(async () => {
     await updateBoardGameAffiliate(adminKey, id, editForm)
     setEditId(null)
+  })
+  const handleFetchRakuten = (id: string) => startTransition(async () => {
+    setRakutenMsg('取得中…')
+    const r = await fetchRakutenForBoardGame(adminKey, id, rakutenKeyword)
+    setRakutenMsg(r.ok ? `✅ 設定: ${r.itemName.slice(0, 40)}（¥${r.price} / ${r.shopName}）` : `⚠️ ${r.message}`)
+    if (r.ok) setEditId(null)
   })
 
   const handleAdd = () => {
@@ -87,6 +98,20 @@ export default function BoardGamesAdmin({
 
               {editId === g.id && (
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
+                  {/* 楽天から画像・リンクを自動取得 */}
+                  <div className="bg-red-50 border border-red-100 rounded-lg p-2 space-y-2">
+                    <div className="text-xs font-bold text-[#BF0000]">楽天から画像・リンクを自動取得</div>
+                    <input className={input} placeholder="検索キーワード" value={rakutenKeyword}
+                      onChange={e => setRakutenKeyword(e.target.value)} />
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs text-gray-500 truncate">{rakutenMsg}</span>
+                      <button onClick={() => handleFetchRakuten(g.id)} disabled={isPending || !rakutenKeyword.trim()}
+                        className="px-3 py-1.5 bg-[#BF0000] text-white text-xs font-bold rounded-lg hover:opacity-90 disabled:opacity-50 shrink-0">
+                        {isPending ? '取得中…' : '🛒 楽天から取得'}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-gray-400">トップ商品の画像をトプ画に、楽天リンクを商品ページ直リンクに設定します。</p>
+                  </div>
                   <input className={input} placeholder="Amazonアフィリンク（空欄で検索リンクに戻る）"
                     value={editForm.amazon} onChange={e => setEditForm({ ...editForm, amazon: e.target.value })} />
                   <input className={input} placeholder="楽天アフィリンク（空欄で検索リンクに戻る）"
