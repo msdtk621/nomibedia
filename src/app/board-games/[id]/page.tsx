@@ -67,6 +67,31 @@ export default async function BoardGameDetailPage({ params }: { params: Promise<
               <h2 className="font-bold text-gray-900">購入はこちら</h2>
               <span className="text-[10px] text-gray-400 border border-gray-200 px-1.5 py-0.5 rounded">PR</span>
             </div>
+
+            {/* 楽天の商品内容（画像・商品名・価格） */}
+            {bg.rakuten_item_name && (
+              <a
+                href={rakutenUrl ?? '#'}
+                target="_blank"
+                rel="sponsored nofollow noopener noreferrer"
+                className="flex gap-3 mb-4 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                {bg.image_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={bg.image_url} alt={bg.rakuten_item_name} className="w-24 h-24 object-contain rounded-lg shrink-0 bg-white" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-gray-700 leading-snug line-clamp-3">{bg.rakuten_item_name}</p>
+                  {bg.rakuten_price != null && (
+                    <p className="mt-1.5">
+                      <span className="text-xl font-bold text-[#BF0000]">¥{Number(bg.rakuten_price).toLocaleString()}</span>
+                      <span className="text-xs text-gray-400 ml-1">〜（楽天市場）</span>
+                    </p>
+                  )}
+                </div>
+              </a>
+            )}
+
             <ShopButtons
               keyword={bg.name}
               amazonUrl={bg.affiliate_amazon}

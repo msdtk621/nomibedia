@@ -13,6 +13,8 @@ export type BoardGame = {
   image_url: string | null
   affiliate_amazon: string | null
   affiliate_rakuten: string | null
+  rakuten_item_name: string | null
+  rakuten_price: number | null
   created_at: string
 }
 
@@ -161,6 +163,8 @@ export async function fetchRakutenForBoardGame(key: string, id: string, keyword:
   await admin.from('board_games').update({
     image_url: product.imageUrl || null,
     affiliate_rakuten: product.affiliateUrl || null,
+    rakuten_item_name: product.itemName || null,
+    rakuten_price: product.price || null,
   }).eq('id', id)
   revalidatePath('/board-games')
   revalidatePath(`/board-games/${id}`)
