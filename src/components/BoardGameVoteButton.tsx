@@ -29,13 +29,15 @@ export default function BoardGameVoteButton({
 
     startTransition(async () => {
       const result = await voteBoardGame(boardGameId, voterId)
-      if (result.voted) {
-        setCount(c => c + 1)
-        setVoted(true)
-      } else {
-        setCount(c => c - 1)
-        setVoted(false)
-      }
+      // サーバーが数え直した実票数で表示を更新（ズレ防止）
+      setVoted(result.voted)
+      setCount(result.count)
+      // 投票状態を localStorage に保存し、リロード後もグッドマークが残るようにする
+      const stored: string[] = JSON.parse(localStorage.getItem('nomipedia_board_game_votes') || '[]')
+      const next = result.voted
+        ? Array.from(new Set([...stored, boardGameId]))
+        : stored.filter(id => id !== boardGameId)
+      localStorage.setItem('nomipedia_board_game_votes', JSON.stringify(next))
     })
   }
 

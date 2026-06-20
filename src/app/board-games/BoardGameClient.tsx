@@ -44,6 +44,40 @@ export default function BoardGameClient({ games }: { games: BoardGame[] }) {
 
   return (
     <div>
+      {/* リクエスト送信（画面上部） */}
+      <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <h2 className="font-bold text-gray-900 mb-1">🙋 載せてほしいボードゲームをリクエスト</h2>
+        <p className="text-xs text-gray-500 mb-3">「これも入れて！」というボードゲームを教えてください。運営が確認して追加します。</p>
+        {reqDone ? (
+          <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            リクエストありがとうございます！確認して追加を検討します🍻
+            <button onClick={() => setReqDone(false)} className="ml-2 text-blue-600 hover:underline">続けて送る</button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <input
+              type="text" value={reqName} onChange={e => setReqName(e.target.value)}
+              placeholder="ボードゲーム名（必須）" maxLength={100}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
+            />
+            <textarea
+              value={reqComment} onChange={e => setReqComment(e.target.value)}
+              placeholder="おすすめポイント・ひとこと（任意）" rows={2} maxLength={300}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 resize-none"
+            />
+            <div className="flex justify-end">
+              <button
+                onClick={handleRequest}
+                disabled={!reqName.trim() || isPending}
+                className="px-5 py-2 bg-amber-500 text-white text-sm font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50"
+              >
+                {isPending ? '送信中…' : 'リクエストを送る'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* 検索 */}
       <div className="relative mb-4">
         <input
@@ -88,40 +122,6 @@ export default function BoardGameClient({ games }: { games: BoardGame[] }) {
               </div>
             )
           })
-        )}
-      </div>
-
-      {/* リクエスト送信 */}
-      <div className="mt-8 bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <h2 className="font-bold text-gray-900 mb-1">🙋 載せてほしいボードゲームをリクエスト</h2>
-        <p className="text-xs text-gray-500 mb-3">「これも入れて！」というボードゲームを教えてください。運営が確認して追加します。</p>
-        {reqDone ? (
-          <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-            リクエストありがとうございます！確認して追加を検討します🍻
-            <button onClick={() => setReqDone(false)} className="ml-2 text-blue-600 hover:underline">続けて送る</button>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <input
-              type="text" value={reqName} onChange={e => setReqName(e.target.value)}
-              placeholder="ボードゲーム名（必須）" maxLength={100}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
-            />
-            <textarea
-              value={reqComment} onChange={e => setReqComment(e.target.value)}
-              placeholder="おすすめポイント・ひとこと（任意）" rows={2} maxLength={300}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 resize-none"
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={handleRequest}
-                disabled={!reqName.trim() || isPending}
-                className="px-5 py-2 bg-amber-500 text-white text-sm font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50"
-              >
-                {isPending ? '送信中…' : 'リクエストを送る'}
-              </button>
-            </div>
-          </div>
         )}
       </div>
     </div>

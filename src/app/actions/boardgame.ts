@@ -49,7 +49,7 @@ export async function voteBoardGame(boardGameId: string, voterId: string) {
     .eq('board_game_id', boardGameId)
   await admin.from('board_games').update({ vote_count: count ?? 0 }).eq('id', boardGameId)
 
-  return { voted }
+  return { voted, count: count ?? 0 }
 }
 
 export async function getBoardGames() {
