@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import Link from 'next/link'
 import BoardGameVoteButton from '@/components/BoardGameVoteButton'
+import ShopButtons from '@/components/ShopButtons'
 import { submitBoardGameRequest } from '@/app/actions/boardgame'
 
 type BoardGame = {
@@ -100,25 +101,30 @@ export default function BoardGameClient({ games }: { games: BoardGame[] }) {
           filtered.map((game) => {
             const rank = games.indexOf(game)
             return (
-              <div key={game.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-3 hover:shadow-sm transition-shadow">
-                <div className={`text-xl font-bold w-7 text-center shrink-0 ${rankColors[rank] ?? 'text-gray-300'}`}>
-                  {rank + 1}
+              <div key={game.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-shadow">
+                <div className="flex items-center gap-3">
+                  <div className={`text-xl font-bold w-7 text-center shrink-0 ${rankColors[rank] ?? 'text-gray-300'}`}>
+                    {rank + 1}
+                  </div>
+                  <Link href={`/board-games/${game.id}`} className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden flex items-center justify-center">
+                      {game.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={game.image_url} alt={game.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xl">🎲</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-gray-900 truncate">{game.name}</div>
+                      <div className="text-sm text-gray-500 mt-0.5 truncate">{game.description}</div>
+                    </div>
+                  </Link>
+                  <BoardGameVoteButton boardGameId={game.id} initialCount={game.vote_count} votedIds={votedIds} />
                 </div>
-                <Link href={`/board-games/${game.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-12 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden flex items-center justify-center">
-                    {game.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={game.image_url} alt={game.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-xl">🎲</span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-gray-900 truncate">{game.name}</div>
-                    <div className="text-sm text-gray-500 mt-0.5 truncate">{game.description}</div>
-                  </div>
-                </Link>
-                <BoardGameVoteButton boardGameId={game.id} initialCount={game.vote_count} votedIds={votedIds} />
+                <div className="mt-3 pl-10">
+                  <ShopButtons keyword={game.name} size="sm" />
+                </div>
               </div>
             )
           })

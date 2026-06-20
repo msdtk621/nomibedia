@@ -10,7 +10,8 @@
 export type AffiliateGood = {
   id: string
   name: string
-  url: string // アフィリエイトリンク（Amazon/楽天/もしも 等）
+  rakutenUrl?: string // 楽天市場の検索/商品アフィリンク（任意）
+  amazonUrl?: string // Amazonの検索/商品アフィリンク（任意）
   imageUrl?: string // 商品画像URL（任意）
   price?: string // 表示用価格テキスト（任意・例: "¥780"）
   tag?: string // ラベル（任意・例: "サイコロ"）
@@ -31,20 +32,31 @@ export type ItemKeywordLink = {
 
 // 楽天アフィリエイトID
 const RAKUTEN_AFFILIATE_ID = '54c2f9c9.71a0e1e0.54c2f9ca.90f64422'
+// AmazonアソシエイトID（StoreID）。未設定('')ならAmazonボタンは自動で非表示。
+const AMAZON_ASSOCIATE_TAG = 'nomibedia-22'
 
 // 楽天市場の検索結果へのアフィリエイトリンクを生成
-function rakutenSearch(keyword: string): string {
+export function rakutenSearch(keyword: string): string {
   const url = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(url)}`
 }
 
-// ① サイドバー「飲み会おすすめグッズ」用の厳選商品（Amazon/楽天/もしも）
-// 例: { id: 'dice', name: 'カラフルサイコロ12個セット', url: 'https://...', price: '¥780', tag: 'サイコロ' },
+// Amazonの検索結果へのアフィリエイトリンクを生成
+export function amazonSearch(keyword: string): string {
+  return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}&tag=${AMAZON_ASSOCIATE_TAG}`
+}
+
+// 各ショップのアフィリエイトが有効か（IDが入っていれば true）
+export const hasRakuten = RAKUTEN_AFFILIATE_ID.length > 0
+export const hasAmazon = AMAZON_ASSOCIATE_TAG.length > 0
+
+// ① サイドバー「飲み会おすすめグッズ」用の厳選商品。
+//    1商品につき楽天・Amazonの両方のリンクを持たせ、コンポーネント側で [楽天][Amazon] のボタンを並べる。
 export const recommendedGoods: AffiliateGood[] = [
-  { id: 'supplement', name: '二日酔い対策サプリを探す', url: rakutenSearch('二日酔い サプリメント'), tag: '🍺 飲む前・飲んだ後に' },
-  { id: 'cardgame', name: 'パーティーカードゲームを探す', url: rakutenSearch('カードゲーム パーティー 大人'), tag: '🃏 盛り上がる定番' },
-  { id: 'boardgame', name: '飲み会向けボードゲームを探す', url: rakutenSearch('ボードゲーム 飲み会'), tag: '🎲 夜中まで楽しむ' },
-  { id: 'goods', name: '飲み会グッズ・おもしろアイテムを探す', url: rakutenSearch('飲み会グッズ パーティー'), tag: '🥤 コップ・罰ゲーム用' },
+  { id: 'supplement', name: '二日酔い対策サプリ', tag: '🍺 飲む前・飲んだ後に', rakutenUrl: rakutenSearch('二日酔い サプリメント'), amazonUrl: amazonSearch('二日酔い サプリメント') },
+  { id: 'cardgame', name: 'パーティーカードゲーム', tag: '🃏 盛り上がる定番', rakutenUrl: rakutenSearch('カードゲーム パーティー 大人'), amazonUrl: amazonSearch('カードゲーム パーティー 大人') },
+  { id: 'boardgame', name: '飲み会向けボードゲーム', tag: '🎲 夜中まで楽しむ', rakutenUrl: rakutenSearch('ボードゲーム 飲み会'), amazonUrl: amazonSearch('ボードゲーム 飲み会') },
+  { id: 'goods', name: '飲み会グッズ・おもしろアイテム', tag: '🥤 コップ・罰ゲーム用', rakutenUrl: rakutenSearch('飲み会グッズ パーティー'), amazonUrl: amazonSearch('飲み会グッズ パーティー') },
 ]
 
 // ② 二日酔い対策バナー（A8.net）

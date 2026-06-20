@@ -3,6 +3,7 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { revalidatePath } from 'next/cache'
 import { sendAdminPush } from '@/lib/push'
+import { searchRakutenProduct } from '@/lib/rakuten-api'
 
 export type BoardGame = {
   id: string
@@ -12,6 +13,8 @@ export type BoardGame = {
   image_url: string | null
   affiliate_amazon: string | null
   affiliate_rakuten: string | null
+  rakuten_item_name: string | null
+  rakuten_price: number | null
   created_at: string
 }
 
@@ -136,6 +139,37 @@ export async function deleteBoardGame(key: string, id: string) {
   await admin.from('board_games').delete().eq('id', id)
   revalidatePath('/board-games')
   revalidatePath('/admin/board-games')
+}
+
+// 管理者：既存ボドゲのアフィリンクを更新（投票・コメントは保持）
+export async function updateBoardGameAffiliate(key: string, id: string, input: { amazon: string; rakuten: string }) {
+  verifyAdmin(key)
+  const admin = createAdminSupabaseClient()
+  await admin.from('board_games').update({
+    affiliate_amazon: input.amazon.trim() || null,
+    affiliate_rakuten: input.rakuten.trim() || null,
+  }).eq('id', id)
+  revalidatePath('/board-games')
+  revalidatePath(`/board-games/${id}`)
+  revalidatePath('/admin/board-games')
+}
+
+// 管理者：楽天APIで商品を検索し、トプ画(image_url)と楽天アフィリンクを自動設定
+export async function fetchRakutenForBoardGame(key: string, id: string, keyword: string) {
+  verifyAdmin(key)
+  const product = await searchRakutenProduct(keyword)
+  if (!product) return { ok: false as const, message: '楽天で商品が見つからないか、API設定が未完了です' }
+  const admin = createAdminSupabaseClient()
+  await admin.from('board_games').update({
+    image_url: product.imageUrl || null,
+    affiliate_rakuten: product.affiliateUrl || null,
+    rakuten_item_name: product.itemName || null,
+    rakuten_price: product.price || null,
+  }).eq('id', id)
+  revalidatePath('/board-games')
+  revalidatePath(`/board-games/${id}`)
+  revalidatePath('/admin/board-games')
+  return { ok: true as const, itemName: product.itemName, price: product.price, shopName: product.shopName }
 }
 
 // 管理者：リクエスト削除（対応済み）

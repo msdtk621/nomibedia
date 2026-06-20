@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ノミベディア
 
-## Getting Started
+「定番からオリジナルまで、飲み会ゲームの百科事典」
+飲み会ゲーム・パーティーゲームをユーザーが投稿・共有し、コメントやランキングで盛り上がれるCGMサイトです。
 
-First, run the development server:
+**本番URL: https://nomibedia.com**（個人開発・運用中）
+
+## 主な機能
+
+- 飲み会ゲーム・ボードゲームの投稿（ルール・人数・盛り上がり度）
+- カテゴリ別の一覧・検索・ランキング
+- コメント・お気に入り機能
+- Webプッシュ通知（web-push / Service Worker）
+- 管理画面（投稿の承認・モデレーション）
+- SEO対応（sitemap / robots / OGP）・アフィリエイトによる収益化
+
+## 技術スタック
+
+| 領域 | 技術 |
+|---|---|
+| フレームワーク | Next.js 16（App Router / Server Actions）/ React 19 / TypeScript |
+| スタイリング | Tailwind CSS v4 |
+| データベース・認証 | Supabase（@supabase/ssr によるサーバーサイド認証） |
+| 通知 | Web Push API（web-push） |
+| ホスティング | Vercel（`master` ブランチ = 本番） |
+
+## 設計のポイント
+
+- App Router + Server Actions 中心の構成（`src/app/actions/`）
+- 収益化リンクは `affiliate.ts` で一元管理し、貼り替え・差し替えを1箇所で完結
+- 投稿 → 管理画面で承認 → 公開、のモデレーションフローを実装
+
+## 開発
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 作者
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+個人開発: [msdtk621](https://github.com/msdtk621)
+企画・設計・実装・デザイン・SEO・収益化まで一人で担当しています。
