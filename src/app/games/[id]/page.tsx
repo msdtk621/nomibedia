@@ -16,6 +16,7 @@ import RequiredItems from '@/components/RequiredItems'
 import HangoverBanner from '@/components/HangoverBanner'
 import RecommendedGoods from '@/components/RecommendedGoods'
 import AdUnit from '@/components/AdUnit'
+import { SITE_URL } from '@/lib/site'
 
 export const revalidate = 0
 
@@ -67,8 +68,38 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
   type EmojiItem = { id: string; emoji: string; x: number; y: number; size: number; rotation?: number }
   const ruleSections = game.rule_sections as Array<{id: string; text: string; mediaType: string; emojiCanvas?: EmojiItem[]; imageUrl?: string}> | null
 
+  // ── 構造化データ（JSON-LD）：パンくず＋HowTo ──
+  const pageUrl = `${SITE_URL}/games/${id}`
+  const steps = (ruleSections && ruleSections.length > 0
+    ? ruleSections.map(s => s.text)
+    : ((game.rules as string | null) ?? '').split('\n')
+  ).map(s => s.trim()).filter(Boolean)
+  const supplies = (requiredItems ?? '')
+    .split(/[、,・\/\n]/)
+    .map(s => s.trim())
+    .filter(Boolean)
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'トップ', item: SITE_URL },
+      ...(category ? [{ '@type': 'ListItem', position: 2, name: category.name, item: `${SITE_URL}/category/${category.slug}` }] : []),
+      { '@type': 'ListItem', position: category ? 3 : 2, name: game.title as string, item: pageUrl },
+    ],
+  }
+  const howTo = steps.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: game.title as string,
+    description: game.description as string,
+    ...(supplies.length > 0 ? { supply: supplies.map(s => ({ '@type': 'HowToSupply', name: s })) } : {}),
+    step: steps.map((text, i) => ({ '@type': 'HowToStep', position: i + 1, text })),
+  } : null
+  const jsonLd = howTo ? [breadcrumb, howTo] : [breadcrumb]
+
   return (
     <div className="flex gap-6 p-3 md:p-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="flex-1 min-w-0">
         <nav className="text-sm text-gray-500 mb-4 flex items-center gap-1">
           <Link href="/" className="hover:text-blue-600">トップ</Link>

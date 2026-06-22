@@ -74,6 +74,18 @@ export async function getGame(id: string) {
   return normalizeGame(data)
 }
 
+// OG画像・メタ用の軽量取得。getGameと違い閲覧数を加算しない
+//（クローラーのOG画像取得で閲覧数が水増しされるのを防ぐ）。
+export async function getGameMeta(id: string) {
+  const supabase = await createServerSupabaseClient()
+  const { data } = await supabase
+    .from('games')
+    .select('title, description, drink_level, player_count, category:categories(name, slug)')
+    .eq('id', id)
+    .single()
+  return data
+}
+
 export async function getComments(gameId: string) {
   const supabase = await createServerSupabaseClient()
   const { data } = await supabase
