@@ -53,18 +53,18 @@ export default function ShopButtons({
     )
   }
 
-  const cls = 'inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors whitespace-nowrap'
+  const cls = 'inline-flex items-center gap-1 px-2 py-1 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors whitespace-nowrap'
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <div className="flex items-center gap-1">
       <span className="text-[10px] text-gray-400 border border-gray-200 px-1 py-px rounded shrink-0">PR</span>
       {amazonHref && (
         <a href={amazonHref} target="_blank" rel={AFFILIATE_REL} className={cls}>
-          <CartIcon color={AMAZON_COLOR} size={14} />{amazonLabel}
+          <CartIcon color={AMAZON_COLOR} size={12} />{amazonLabel}
         </a>
       )}
       {rakutenHref && (
         <a href={rakutenHref} target="_blank" rel={AFFILIATE_REL} className={cls}>
-          <CartIcon color={RAKUTEN_COLOR} size={14} />{rakutenLabel}
+          <CartIcon color={RAKUTEN_COLOR} size={12} />{rakutenLabel}
         </a>
       )}
     </div>
