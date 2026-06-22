@@ -53,9 +53,9 @@ export default function ShopButtons({
     )
   }
 
-  const cls = 'inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors'
+  const cls = 'inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-50 hover:border-gray-300 transition-colors whitespace-nowrap'
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex flex-wrap items-center gap-1.5">
       <span className="text-[10px] text-gray-400 border border-gray-200 px-1 py-px rounded shrink-0">PR</span>
       {amazonHref && (
         <a href={amazonHref} target="_blank" rel={AFFILIATE_REL} className={cls}>
