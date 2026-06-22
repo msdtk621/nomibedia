@@ -1,6 +1,8 @@
+import { Fragment } from 'react'
 import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
 import RecommendedGoods from '@/components/RecommendedGoods'
+import AdUnit from '@/components/AdUnit'
 import AppPromo from '@/components/AppPromo'
 import { getGames, getCategories } from '@/lib/db'
 import Link from 'next/link'
@@ -121,8 +123,12 @@ export default async function Home({
           </div>
         ) : (
           <div className="space-y-3">
-            {games.map((game: Record<string, unknown>) => (
-              <GameCard key={game.id as string} game={game as Parameters<typeof GameCard>[0]['game']} />
+            {games.map((game: Record<string, unknown>, i: number) => (
+              <Fragment key={game.id as string}>
+                <GameCard game={game as Parameters<typeof GameCard>[0]['game']} />
+                {/* フィード内広告（5件目の後に1つだけ）。slot未設定なら非表示 */}
+                {i === 4 && <AdUnit slot="feed" />}
+              </Fragment>
             ))}
           </div>
         )}

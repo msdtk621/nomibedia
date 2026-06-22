@@ -15,6 +15,7 @@ import ShareButtons from '@/components/ShareButtons'
 import RequiredItems from '@/components/RequiredItems'
 import HangoverBanner from '@/components/HangoverBanner'
 import RecommendedGoods from '@/components/RecommendedGoods'
+import AdUnit from '@/components/AdUnit'
 
 export const revalidate = 0
 
@@ -230,6 +231,9 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
             <ShareButtons title={game.title as string} />
           </div>
         </div>
+
+        {/* 記事内広告（説明・ルールを読み終えた位置）。slot未設定なら非表示 */}
+        <AdUnit slot="article" />
 
         <HangoverBanner />
 

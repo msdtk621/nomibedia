@@ -64,8 +64,20 @@ export const recommendedGoods: AffiliateGood[] = [
 export const hangoverAds: HangoverAd[] = []
 
 // ① 「必要なもの(required_items)」自動リンク化のキーワード辞書
-// 例: { keyword: 'サイコロ', url: 'https://...' }, { keyword: 'トランプ', url: 'https://...' },
-export const itemKeywordLinks: ItemKeywordLink[] = []
+// 「必要なもの」を読む＝今まさに道具を探している瞬間なのでCVRが構造的に高い枠。
+// 検索リンク（amazonSearch）で生成。個別商品リンクに差し替えればさらにCVR向上。
+export const itemKeywordLinks: ItemKeywordLink[] = [
+  { keyword: 'トランプ', url: amazonSearch('トランプ') },
+  { keyword: 'サイコロ', url: amazonSearch('サイコロ 6面 大きい') },
+  { keyword: 'ジェンガ', url: amazonSearch('ジェンガ') },
+  { keyword: 'UNO', url: amazonSearch('UNO カードゲーム') },
+  { keyword: 'ダーツ', url: amazonSearch('ダーツ セット 家庭用') },
+  { keyword: 'ビンゴ', url: amazonSearch('ビンゴ ゲーム セット') },
+  { keyword: 'ルーレット', url: amazonSearch('飲み会 ルーレット 罰ゲーム') },
+  { keyword: 'タイマー', url: amazonSearch('キッチンタイマー') },
+  { keyword: '早押しボタン', url: amazonSearch('早押しボタン クイズ') },
+  { keyword: '罰ゲーム', url: amazonSearch('罰ゲーム グッズ パーティー') },
+]
 
 // 各UIの表示可否（リンクが入ったら true になる）
 export const hasGoods = recommendedGoods.length > 0
