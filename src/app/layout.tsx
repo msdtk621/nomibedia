@@ -10,6 +10,9 @@ import { SITE_URL } from '@/lib/site'
 
 const geist = Geist({ subsets: ['latin'] })
 
+// Google Analytics 4 の測定ID。本番では環境変数で上書き可能。
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? 'G-5M8RVGV0P5'
+
 export const metadata: Metadata = {
   title: 'ノミベディア - 定番からオリジナルまで、飲み会ゲームの百科事典',
   description: '飲みゲーを投稿・共有・コメントで盛り上がるサイト',
@@ -61,16 +64,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-        {/* Google Analytics 4：環境変数 NEXT_PUBLIC_GA_ID（例: G-XXXXXXXXXX）を
-            セットすると計測開始。未設定なら何も出力しない。 */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
+        {/* Google Analytics 4。既定の測定IDをコードに持ち、環境変数 NEXT_PUBLIC_GA_ID で上書き可。
+            手動の<head>タグはhydrationを壊すため、必ずnext/scriptで読み込む。 */}
+        {GA_ID && (
           <>
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
               strategy="afterInteractive"
             />
             <Script id="ga4-init" strategy="afterInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`}
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
             </Script>
           </>
         )}
