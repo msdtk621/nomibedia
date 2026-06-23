@@ -14,7 +14,13 @@ export type RakutenProduct = {
 }
 
 // キーワードで楽天市場のトップ商品を1件取得（画像・価格・アフィリンク）
-export async function searchRakutenProduct(keyword: string): Promise<RakutenProduct | null> {
+// opts.revalidate（秒）を渡すと結果をデータキャッシュに保存する。
+//   ・おすすめグッズ枠 … 全ページ共通＆日次更新で十分なので revalidate を指定しAPIの叩きすぎを防ぐ
+//   ・管理画面の手動取得 … 既定（no-store）で常に最新を取得
+export async function searchRakutenProduct(
+  keyword: string,
+  opts: { revalidate?: number } = {},
+): Promise<RakutenProduct | null> {
   const applicationId = process.env.RAKUTEN_APP_ID
   const accessKey = process.env.RAKUTEN_ACCESS_KEY
   if (!applicationId || !accessKey || !keyword.trim()) return null
@@ -30,11 +36,15 @@ export async function searchRakutenProduct(keyword: string): Promise<RakutenProd
     format: 'json',
   })
 
+  const cacheOpt = opts.revalidate
+    ? { next: { revalidate: opts.revalidate, tags: ['rakuten-goods'] } }
+    : { cache: 'no-store' as const }
+
   let res: Response
   try {
     res = await fetch(`${ENDPOINT}?${params.toString()}`, {
       headers: { Origin: SITE_ORIGIN, Referer: `${SITE_ORIGIN}/` },
-      cache: 'no-store',
+      ...cacheOpt,
     })
   } catch {
     return null
