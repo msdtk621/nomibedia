@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
+import { createServerSupabaseClient, createAdminSupabaseClient, createPublicSupabaseClient } from '@/lib/supabase-server'
 import { revalidatePath } from 'next/cache'
 import { sendAdminPush } from '@/lib/push'
 import { searchRakutenProduct } from '@/lib/rakuten-api'
@@ -56,7 +56,7 @@ export async function voteBoardGame(boardGameId: string, voterId: string) {
 }
 
 export async function getBoardGames() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('board_games')
     .select('*')
@@ -65,13 +65,13 @@ export async function getBoardGames() {
 }
 
 export async function getBoardGame(id: string) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase.from('board_games').select('*').eq('id', id).single()
   return (data as BoardGame | null) ?? null
 }
 
 export async function getBoardGameComments(boardGameId: string) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('board_game_comments')
     .select('*')

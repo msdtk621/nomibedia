@@ -2,7 +2,7 @@ import { getBoardGames } from '@/app/actions/boardgame'
 import RankingSidebar from '@/components/RankingSidebar'
 import BoardGameClient from './BoardGameClient'
 
-export const revalidate = 0
+export const revalidate = 120
 
 export const metadata = { title: '飲み屋おすすめボードゲームランキング | ノミベディア' }
 

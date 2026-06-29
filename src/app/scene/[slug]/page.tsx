@@ -8,7 +8,7 @@ import { getScenedGames } from '@/lib/db'
 import { scenes, getScene } from '@/lib/scenes'
 import { SITE_URL } from '@/lib/site'
 
-export const revalidate = 0
+export const revalidate = 120
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

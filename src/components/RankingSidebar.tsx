@@ -1,13 +1,14 @@
 import Link from 'next/link'
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { getCategoryImage } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
 import RecommendedGoods from './RecommendedGoods'
 import AdUnit from './AdUnit'
 
-
+// 全ページに表示されるサイドバー。cookie不使用の公開クライアントで読むことで、
+// このサイドバーを含むページがISRキャッシュ可能になる（関数消費の削減）。
 async function getTopGames() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('games')
     .select('id, title, like_count, comment_count, thumbnail_url, category:categories(name, icon, slug)')
@@ -17,7 +18,7 @@ async function getTopGames() {
 }
 
 async function getPopularTags() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase.from('tags').select('name').limit(10)
   return (data ?? []).map(t => t.name)
 }

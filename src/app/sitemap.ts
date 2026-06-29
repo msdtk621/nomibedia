@@ -1,11 +1,11 @@
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/site'
 import { scenes } from '@/lib/scenes'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE_URL
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
 
   const { data: games } = await supabase.from('games').select('id, created_at').order('created_at', { ascending: false })
   const { data: categories } = await supabase.from('categories').select('slug')

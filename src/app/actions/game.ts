@@ -2,6 +2,7 @@
 
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 export async function postGame(formData: FormData) {
   const supabase = await createServerSupabaseClient()
@@ -83,6 +84,9 @@ export async function postGame(formData: FormData) {
     }
   }
 
+  // キャッシュした一覧ページに新規ゲームを即反映
+  revalidatePath('/')
+  revalidatePath('/new')
   redirect(`/games/${game.id}`)
 }
 
@@ -97,6 +101,10 @@ export async function deleteGame(gameId: string, authorId: string) {
   await admin.from('game_tags').delete().eq('game_id', gameId)
   await admin.from('likes').delete().eq('game_id', gameId)
   await admin.from('games').delete().eq('id', gameId)
+  // 削除をキャッシュした一覧・詳細に反映
+  revalidatePath('/')
+  revalidatePath('/new')
+  revalidatePath(`/games/${gameId}`)
   redirect('/')
 }
 
@@ -191,6 +199,10 @@ export async function updateGame(gameId: string, authorId: string, formData: For
     }
   }
 
+  // 編集内容をキャッシュした詳細・一覧に即反映
+  revalidatePath(`/games/${gameId}`)
+  revalidatePath('/')
+  revalidatePath('/new')
   redirect(`/games/${gameId}`)
 }
 

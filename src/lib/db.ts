@@ -1,14 +1,18 @@
-import { createServerSupabaseClient, createAdminSupabaseClient, createPublicSupabaseClient } from './supabase-server'
+import { createPublicSupabaseClient } from './supabase-server'
 import { type Game } from './types'
 
+// 公開コンテンツの読み取りは cookie 不使用の公開クライアントに統一する。
+// これにより各ページが cookies()（Request-time API）を踏まなくなり、ISRキャッシュが効く
+// （= 毎リクエストごとのサーバー実行を避け、Netlifyの関数消費を大幅に削減できる）。
+
 export async function getCategories() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase.from('categories').select('*').order('name')
   return data ?? []
 }
 
 export async function getNotices() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('notices')
     .select('*')
@@ -18,7 +22,7 @@ export async function getNotices() {
 }
 
 export async function getGames({ categorySlug, tag, q }: { categorySlug?: string; tag?: string; q?: string } = {}) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   let query = supabase
     .from('games')
     .select(`*, category:categories(*), game_tags(tag:tags(*))`)
@@ -49,7 +53,7 @@ export async function getGames({ categorySlug, tag, q }: { categorySlug?: string
 
 export async function getGamesByIds(ids: string[]) {
   if (ids.length === 0) return []
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('games')
     .select(`*, category:categories(*), game_tags(tag:tags(*))`)
@@ -60,22 +64,19 @@ export async function getGamesByIds(ids: string[]) {
 }
 
 export async function getGame(id: string) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('games')
     .select(`*, category:categories(*), game_tags(tag:tags(*))`)
     .eq('id', id)
     .single()
   if (!data) return null
-
-  // 閲覧数の加算はRLSを跨ぐため管理者権限で行う
-  createAdminSupabaseClient().from('games').update({ view_count: (data.view_count ?? 0) + 1 }).eq('id', id).then(() => {})
-
+  // 閲覧数の加算はクライアント側（ViewCounter → /api/games/[id]/view）で行う。
+  // ここで加算するとページがキャッシュできず、かつクローラーで水増しされるため分離した。
   return normalizeGame(data)
 }
 
-// OG画像・メタ用の軽量取得。getGameと違い閲覧数を加算しない
-//（クローラーのOG画像取得で閲覧数が水増しされるのを防ぐ）。
+// OG画像・メタ用の軽量取得。getGameと違い閲覧数を加算しない。
 // cookie不使用の公開クライアントを使うことで、OG画像が静的最適化・キャッシュされる
 //（クローラーの都度再生成によるサーバー消費を防ぐ）。
 export async function getGameMeta(id: string) {
@@ -89,7 +90,7 @@ export async function getGameMeta(id: string) {
 }
 
 export async function getComments(gameId: string) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('comments')
     .select('*')
@@ -101,7 +102,7 @@ export async function getComments(gameId: string) {
 // シーン軸ページ用。keywords が title/description に含まれるゲームを人気順で抽出し、
 // 件数が少なければ人気ゲームで補完する（新規サイトでもページが空にならないようにする）。
 export async function getScenedGames(keywords: string[], limit = 12): Promise<Game[]> {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const select = `*, category:categories(*), game_tags(tag:tags(*))`
 
   let games: Game[] = []
@@ -138,7 +139,7 @@ export async function getScenedGames(keywords: string[], limit = 12): Promise<Ga
 }
 
 export async function getRankedGames() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('games')
     .select(`*, category:categories(*), game_tags(tag:tags(*))`)

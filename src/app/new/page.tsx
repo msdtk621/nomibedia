@@ -3,7 +3,7 @@ import GameCard from '@/components/GameCard'
 import RankingSidebar from '@/components/RankingSidebar'
 import { asset } from '@/lib/asset'
 
-export const revalidate = 0
+export const revalidate = 120
 
 export default async function NewPage() {
   const games = await getGames()

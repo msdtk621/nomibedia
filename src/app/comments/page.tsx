@@ -1,13 +1,13 @@
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createPublicSupabaseClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 import RankingSidebar from '@/components/RankingSidebar'
 import { getCategoryImage } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
 
-export const revalidate = 0
+export const revalidate = 120
 
 export default async function CommentsPage() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
 
   const { data: comments } = await supabase
     .from('comments')

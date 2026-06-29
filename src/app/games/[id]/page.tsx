@@ -16,9 +16,13 @@ import RequiredItems from '@/components/RequiredItems'
 import HangoverBanner from '@/components/HangoverBanner'
 import RecommendedGoods from '@/components/RecommendedGoods'
 import AdUnit from '@/components/AdUnit'
+import ViewCounter from '@/components/ViewCounter'
 import { SITE_URL } from '@/lib/site'
 
-export const revalidate = 0
+// 詳細ページはISRキャッシュ（クローラー来訪のたびのサーバー実行を防ぐ）。
+// コメント/いいねはサーバーアクション側で revalidatePath するため即時反映される。
+// 閲覧数は ViewCounter（クライアント）で加算する。
+export const revalidate = 600
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -99,6 +103,7 @@ export default async function GamePage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="flex gap-6 p-3 md:p-6">
+      <ViewCounter gameId={id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="flex-1 min-w-0">
         <nav className="text-sm text-gray-500 mb-4 flex items-center gap-1">

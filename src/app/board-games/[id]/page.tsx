@@ -7,7 +7,7 @@ import BoardGameVoteButton from '@/components/BoardGameVoteButton'
 import ShopButtons from '@/components/ShopButtons'
 import { amazonSearch, rakutenSearch, hasAmazon, hasRakuten } from '@/lib/affiliate'
 
-export const revalidate = 0
+export const revalidate = 300
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
