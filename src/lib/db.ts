@@ -96,6 +96,45 @@ export async function getComments(gameId: string) {
   return data ?? []
 }
 
+// シーン軸ページ用。keywords が title/description に含まれるゲームを人気順で抽出し、
+// 件数が少なければ人気ゲームで補完する（新規サイトでもページが空にならないようにする）。
+export async function getScenedGames(keywords: string[], limit = 12): Promise<Game[]> {
+  const supabase = await createServerSupabaseClient()
+  const select = `*, category:categories(*), game_tags(tag:tags(*))`
+
+  let games: Game[] = []
+  if (keywords.length > 0) {
+    const orFilter = keywords
+      .map((k) => `title.ilike.%${k}%,description.ilike.%${k}%`)
+      .join(',')
+    const { data: matched } = await supabase
+      .from('games')
+      .select(select)
+      .or(orFilter)
+      .order('like_count', { ascending: false })
+      .limit(limit)
+    games = (matched ?? []).map(normalizeGame)
+  }
+
+  // 関連ゲームが少ないときは人気ゲームで埋める（重複は除外）
+  if (games.length < limit) {
+    const { data: popular } = await supabase
+      .from('games')
+      .select(select)
+      .order('like_count', { ascending: false })
+      .limit(limit)
+    const have = new Set(games.map((g) => g.id))
+    for (const g of (popular ?? []).map(normalizeGame)) {
+      if (games.length >= limit) break
+      if (!have.has(g.id)) {
+        games.push(g)
+        have.add(g.id)
+      }
+    }
+  }
+  return games
+}
+
 export async function getRankedGames() {
   const supabase = await createServerSupabaseClient()
   const { data } = await supabase

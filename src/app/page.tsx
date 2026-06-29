@@ -5,6 +5,7 @@ import RecommendedGoods from '@/components/RecommendedGoods'
 import AdUnit from '@/components/AdUnit'
 import AppPromo from '@/components/AppPromo'
 import { getGames, getCategories } from '@/lib/db'
+import { scenes } from '@/lib/scenes'
 import Link from 'next/link'
 import { getCategoryImage } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
@@ -60,6 +61,22 @@ export default async function Home({
                   <div className="text-gray-300 text-xs mt-1">›</div>
                 </Link>
               ))}
+            </div>
+
+            {/* シーンから探す（内部リンク＆回遊。SEOのシーン軸ページへ誘導） */}
+            <div className="mb-6">
+              <h2 className="font-bold text-gray-900 mb-3">シーンから探す</h2>
+              <div className="flex gap-2 flex-wrap">
+                {scenes.map((s) => (
+                  <Link
+                    key={s.slug}
+                    href={`/scene/${s.slug}`}
+                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-amber-400 hover:text-amber-600 transition-colors"
+                  >
+                    {s.emoji} {s.name}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {/* 投稿促進ボックス */}

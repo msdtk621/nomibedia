@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/site'
+import { scenes } from '@/lib/scenes'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE_URL
@@ -30,6 +31,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
+  const sceneUrls = scenes.map(s => ({
+    url: `${base}/scene/${s.slug}`,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
   return [
     { url: base, changeFrequency: 'daily', priority: 1.0 },
     { url: `${base}/ranking`, changeFrequency: 'daily', priority: 0.9 },
@@ -39,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/contact`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/terms`, changeFrequency: 'yearly', priority: 0.3 },
+    ...sceneUrls,
     ...categoryUrls,
     ...boardGameUrls,
     ...gameUrls,
