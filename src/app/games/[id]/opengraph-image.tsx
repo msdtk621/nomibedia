@@ -5,6 +5,9 @@ import { loadGoogleFont } from '@/lib/og'
 export const alt = '飲み会ゲーム | ノミベディア'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+// 生成したOG画像は1日キャッシュ（クローラーの都度再生成によるサーバー消費を防ぐ）。
+// getGameMetaがcookie非依存になったことと併せて、この画像はキャッシュされる。
+export const revalidate = 86400
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

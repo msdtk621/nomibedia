@@ -1,4 +1,4 @@
-import { createServerSupabaseClient, createAdminSupabaseClient } from './supabase-server'
+import { createServerSupabaseClient, createAdminSupabaseClient, createPublicSupabaseClient } from './supabase-server'
 import { type Game } from './types'
 
 export async function getCategories() {
@@ -76,8 +76,10 @@ export async function getGame(id: string) {
 
 // OG画像・メタ用の軽量取得。getGameと違い閲覧数を加算しない
 //（クローラーのOG画像取得で閲覧数が水増しされるのを防ぐ）。
+// cookie不使用の公開クライアントを使うことで、OG画像が静的最適化・キャッシュされる
+//（クローラーの都度再生成によるサーバー消費を防ぐ）。
 export async function getGameMeta(id: string) {
-  const supabase = await createServerSupabaseClient()
+  const supabase = createPublicSupabaseClient()
   const { data } = await supabase
     .from('games')
     .select('title, description, drink_level, player_count, category:categories(name, slug)')

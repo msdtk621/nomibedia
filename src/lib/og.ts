@@ -9,12 +9,14 @@ export async function loadGoogleFont(family: string, weight: number, text: strin
       // 古いUAだと Google が truetype(ttf) を返す（satoriが扱える形式）
       'User-Agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
     },
+    // フォントは変わらないので長期キャッシュ（OG生成時の再取得を防ぐ）
+    next: { revalidate: 2592000 },
   }).then((res) => res.text())
 
   const match = css.match(/src:\s*url\((.+?)\)\s*format\(['"]?(?:opentype|truetype)['"]?\)/)
   if (!match) throw new Error('フォントURLの抽出に失敗しました')
 
-  const fontRes = await fetch(match[1])
+  const fontRes = await fetch(match[1], { next: { revalidate: 2592000 } })
   if (!fontRes.ok) throw new Error('フォントの取得に失敗しました')
   return fontRes.arrayBuffer()
 }
