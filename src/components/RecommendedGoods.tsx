@@ -14,8 +14,11 @@ export default async function RecommendedGoods() {
 
   const goods = await Promise.all(
     recommendedGoods.map(async (g) => {
+      // 安い順(+itemPrice)で取得し、画像のある最安商品を採用する
       const live = await searchRakutenProduct(g.searchKeyword ?? g.name, {
         revalidate: GOODS_REVALIDATE,
+        sort: '+itemPrice',
+        hits: 20,
       })
       return {
         ...g,
@@ -23,6 +26,7 @@ export default async function RecommendedGoods() {
         // 実商品が取れたら楽天ボタンはその商品ページへ深リンク（検索ページよりCVRが高い）
         rakutenUrl: live?.affiliateUrl || g.rakutenUrl,
         priceText: live?.price ? `¥${live.price.toLocaleString()}` : g.price,
+        isLowest: !!live?.price,
       }
     }),
   )
@@ -52,7 +56,7 @@ export default async function RecommendedGoods() {
               {g.priceText && (
                 <div className="mb-1.5">
                   <span className="text-sm font-bold text-gray-900">{g.priceText}</span>
-                  <span className="ml-1 text-[10px] text-gray-400">楽天参考価格</span>
+                  <span className="ml-1 text-[10px] text-gray-400">{g.isLowest ? '楽天最安値' : '楽天参考価格'}</span>
                 </div>
               )}
               <ShopButtons keyword={g.name} amazonUrl={g.amazonUrl} rakutenUrl={g.rakutenUrl} size="sm" />
