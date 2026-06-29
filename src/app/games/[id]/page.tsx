@@ -28,14 +28,25 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const game = await getGame(id)
   if (!game) return {}
+  const title = game.title as string
+  // 「{ゲーム名} ルール / やり方」など実検索語をtitleに含めてロングテールを捕捉
+  const metaTitle = `${title}のルール・やり方｜飲み会ゲーム｜ノミベディア`
+  // 人数・必要なもの・酔い度をdescriptionに動的差し込み（未設定は省略）
+  const players = ((game.player_count as string[] | null) ?? [])
+    .slice()
+    .sort((a, b) => parseInt(a) - parseInt(b))
+  const playerText = players.length > 0 ? `${players.join('〜')}人向け` : ''
+  const items = (game.required_items as string | null)?.trim()
+  const drink = (game.drink_level as number) ?? 1
+  const facts = [playerText, items ? `必要なもの:${items}` : '', `酔い度${drink}/5`].filter(Boolean).join('・')
+  const base = (game.description as string)?.trim()
+  const metaDesc = (base ? `${base} ` : `${title}の遊び方を解説。`) + `${facts}。ルールと盛り上げ方を紹介します。`
+  const desc = metaDesc.replace(/\s+/g, ' ').slice(0, 120)
   return {
-    title: `${game.title as string} | ノミベディア`,
-    description: game.description as string,
-    openGraph: {
-      title: `${game.title as string} | ノミベディア`,
-      description: game.description as string,
-      type: 'article',
-    },
+    title: metaTitle,
+    description: desc,
+    openGraph: { title: metaTitle, description: desc, type: 'article' },
+    twitter: { card: 'summary_large_image', title: metaTitle, description: desc },
   }
 }
 
