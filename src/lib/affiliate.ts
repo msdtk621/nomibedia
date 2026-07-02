@@ -28,7 +28,8 @@ export type HangoverAd = {
 
 export type ItemKeywordLink = {
   keyword: string // 「必要なもの」テキスト中に出たらリンク化するキーワード
-  url: string // 物販検索/商品アフィリンク
+  url: string // 物販検索/商品アフィリンク（Amazon検索）
+  searchKeyword?: string // 楽天API商品検索に使う語（未指定なら keyword を使用）
 }
 
 // 楽天アフィリエイトID
@@ -68,16 +69,16 @@ export const hangoverAds: HangoverAd[] = []
 // 「必要なもの」を読む＝今まさに道具を探している瞬間なのでCVRが構造的に高い枠。
 // 検索リンク（amazonSearch）で生成。個別商品リンクに差し替えればさらにCVR向上。
 export const itemKeywordLinks: ItemKeywordLink[] = [
-  { keyword: 'トランプ', url: amazonSearch('トランプ') },
-  { keyword: 'サイコロ', url: amazonSearch('サイコロ 6面 大きい') },
-  { keyword: 'ジェンガ', url: amazonSearch('ジェンガ') },
-  { keyword: 'UNO', url: amazonSearch('UNO カードゲーム') },
-  { keyword: 'ダーツ', url: amazonSearch('ダーツ セット 家庭用') },
-  { keyword: 'ビンゴ', url: amazonSearch('ビンゴ ゲーム セット') },
-  { keyword: 'ルーレット', url: amazonSearch('飲み会 ルーレット 罰ゲーム') },
-  { keyword: 'タイマー', url: amazonSearch('キッチンタイマー') },
-  { keyword: '早押しボタン', url: amazonSearch('早押しボタン クイズ') },
-  { keyword: '罰ゲーム', url: amazonSearch('罰ゲーム グッズ パーティー') },
+  { keyword: 'トランプ', url: amazonSearch('トランプ'), searchKeyword: 'トランプ' },
+  { keyword: 'サイコロ', url: amazonSearch('サイコロ 6面 大きい'), searchKeyword: 'サイコロ 6面' },
+  { keyword: 'ジェンガ', url: amazonSearch('ジェンガ'), searchKeyword: 'ジェンガ' },
+  { keyword: 'UNO', url: amazonSearch('UNO カードゲーム'), searchKeyword: 'UNO カードゲーム' },
+  { keyword: 'ダーツ', url: amazonSearch('ダーツ セット 家庭用'), searchKeyword: 'ダーツ 家庭用' },
+  { keyword: 'ビンゴ', url: amazonSearch('ビンゴ ゲーム セット'), searchKeyword: 'ビンゴ ゲーム' },
+  { keyword: 'ルーレット', url: amazonSearch('飲み会 ルーレット 罰ゲーム'), searchKeyword: '飲み会 ルーレット' },
+  { keyword: 'タイマー', url: amazonSearch('キッチンタイマー'), searchKeyword: 'キッチンタイマー' },
+  { keyword: '早押しボタン', url: amazonSearch('早押しボタン クイズ'), searchKeyword: '早押しボタン' },
+  { keyword: '罰ゲーム', url: amazonSearch('罰ゲーム グッズ パーティー'), searchKeyword: '罰ゲーム グッズ' },
 ]
 
 // 各UIの表示可否（リンクが入ったら true になる）
