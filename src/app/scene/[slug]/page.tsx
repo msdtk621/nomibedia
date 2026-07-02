@@ -29,12 +29,13 @@ export default async function ScenePage({ params }: { params: Promise<{ slug: st
   const scene = getScene(slug)
   if (!scene) notFound()
 
-  const games = await getScenedGames(scene.keywords)
+  const { matched, supplemented } = await getScenedGames(scene.keywords)
   const others = scenes.filter((s) => s.slug !== scene.slug)
   const pageUrl = `${SITE_URL}/scene/${scene.slug}`
+  const listed = [...matched, ...supplemented]
 
-  // ── 構造化データ（JSON-LD）：パンくず＋ゲーム一覧 ──
-  const jsonLd = [
+  // ── 構造化データ（JSON-LD）：パンくず＋ゲーム一覧＋FAQ ──
+  const jsonLd: Record<string, unknown>[] = [
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
@@ -47,7 +48,7 @@ export default async function ScenePage({ params }: { params: Promise<{ slug: st
       '@context': 'https://schema.org',
       '@type': 'ItemList',
       name: scene.title,
-      itemListElement: games.slice(0, 10).map((g, i) => ({
+      itemListElement: listed.slice(0, 10).map((g, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         url: `${SITE_URL}/games/${g.id}`,
@@ -55,6 +56,17 @@ export default async function ScenePage({ params }: { params: Promise<{ slug: st
       })),
     },
   ]
+  if (scene.faq && scene.faq.length > 0) {
+    jsonLd.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: scene.faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    })
+  }
 
   return (
     <div className="flex gap-6 p-3 md:p-6">
@@ -74,6 +86,14 @@ export default async function ScenePage({ params }: { params: Promise<{ slug: st
           <p className="text-gray-600 leading-relaxed">{scene.lead}</p>
         </div>
 
+        {/* シーン固有の選び方（重複コンテンツ回避＆読み物価値） */}
+        {scene.howToChoose && (
+          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+            <h2 className="font-bold text-gray-900 mb-2">{scene.name}のゲームの選び方</h2>
+            <p className="text-gray-700 leading-relaxed">{scene.howToChoose}</p>
+          </div>
+        )}
+
         {/* 他シーンへの内部リンク（回遊＆クロール促進） */}
         <div className="mb-6">
           <p className="text-xs text-gray-400 mb-2">ほかのシーンから探す</p>
@@ -90,8 +110,7 @@ export default async function ScenePage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
 
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{scene.name}におすすめのゲーム</h2>
-        {games.length === 0 ? (
+        {listed.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
             <p>準備中です。まずは人気ゲームをチェック！</p>
             <Link
@@ -102,14 +121,48 @@ export default async function ScenePage({ params }: { params: Promise<{ slug: st
             </Link>
           </div>
         ) : (
-          <div className="space-y-3">
-            {games.map((game, i) => (
-              <Fragment key={game.id}>
-                <GameCard game={game} />
-                {/* フィード内広告（5件目の後に1つだけ）。slot未設定なら非表示 */}
-                {i === 4 && <AdUnit slot="feed" />}
-              </Fragment>
-            ))}
+          <>
+            {matched.length > 0 && (
+              <>
+                <h2 className="text-lg font-bold text-gray-900 mb-3">{scene.name}におすすめのゲーム</h2>
+                <div className="space-y-3">
+                  {matched.map((game, i) => (
+                    <Fragment key={game.id}>
+                      <GameCard game={game} />
+                      {/* フィード内広告（5件目の後に1つだけ）。slot未設定なら非表示 */}
+                      {i === 4 && <AdUnit slot="feed" />}
+                    </Fragment>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {supplemented.length > 0 && (
+              <div className="mt-8">
+                <h2 className="text-lg font-bold text-gray-900 mb-1">シーンを問わず定番の飲み会ゲーム</h2>
+                <p className="text-xs text-gray-400 mb-3">どんな飲み会でも使える人気ゲームです。</p>
+                <div className="space-y-3">
+                  {supplemented.map((game) => (
+                    <GameCard key={game.id} game={game} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* FAQ（FAQPage構造化データと対応） */}
+        {scene.faq && scene.faq.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-3">{scene.name}のゲームについてよくある質問</h2>
+            <div className="space-y-3">
+              {scene.faq.map((f, i) => (
+                <div key={i} className="bg-white border border-gray-200 rounded-xl p-5">
+                  <p className="font-bold text-gray-900 mb-1">Q. {f.q}</p>
+                  <p className="text-gray-700 leading-relaxed">A. {f.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

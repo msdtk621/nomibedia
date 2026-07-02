@@ -6,6 +6,7 @@ import AdUnit from '@/components/AdUnit'
 import AppPromo from '@/components/AppPromo'
 import { getGames, getCategories } from '@/lib/db'
 import { scenes } from '@/lib/scenes'
+import { gameLists } from '@/lib/lists'
 import Link from 'next/link'
 import { getCategoryImage } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
@@ -74,6 +75,22 @@ export default async function Home({
                     className="px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-amber-400 hover:text-amber-600 transition-colors"
                   >
                     {s.emoji} {s.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* 目的から探す（属性軸の目的別リストへ誘導） */}
+            <div className="mb-6">
+              <h2 className="font-bold text-gray-900 mb-3">目的から探す</h2>
+              <div className="flex gap-2 flex-wrap">
+                {gameLists.map((l) => (
+                  <Link
+                    key={l.slug}
+                    href={`/list/${l.slug}`}
+                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-700 hover:border-amber-400 hover:text-amber-600 transition-colors"
+                  >
+                    {l.emoji} {l.name}
                   </Link>
                 ))}
               </div>

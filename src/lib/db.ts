@@ -99,43 +99,50 @@ export async function getComments(gameId: string) {
   return data ?? []
 }
 
-// シーン軸ページ用。keywords が title/description に含まれるゲームを人気順で抽出し、
-// 件数が少なければ人気ゲームで補完する（新規サイトでもページが空にならないようにする）。
-export async function getScenedGames(keywords: string[], limit = 12): Promise<Game[]> {
+// シーン軸ページ用。keywords が title/description に含まれるゲームを人気順で抽出（matched）。
+// 件数が少ないときだけ、人気ゲームを少数だけ補完（supplemented）して返す。
+// 全シーンを同じ人気ゲームで埋めると重複コンテンツ判定を受けるため、補完は上限を設け、
+// ページ側で「シーン共通の定番」として分けて明示する。
+export async function getScenedGames(
+  keywords: string[],
+  limit = 12,
+): Promise<{ matched: Game[]; supplemented: Game[] }> {
   const supabase = createPublicSupabaseClient()
   const select = `*, category:categories(*), game_tags(tag:tags(*))`
 
-  let games: Game[] = []
+  let matched: Game[] = []
   if (keywords.length > 0) {
     const orFilter = keywords
       .map((k) => `title.ilike.%${k}%,description.ilike.%${k}%`)
       .join(',')
-    const { data: matched } = await supabase
+    const { data } = await supabase
       .from('games')
       .select(select)
       .or(orFilter)
       .order('like_count', { ascending: false })
       .limit(limit)
-    games = (matched ?? []).map(normalizeGame)
+    matched = (data ?? []).map(normalizeGame)
   }
 
-  // 関連ゲームが少ないときは人気ゲームで埋める（重複は除外）
-  if (games.length < limit) {
+  // 補完は最大6件まで（全シーンが同一の人気ゲームで埋まるのを避ける）
+  const SUPPLEMENT_CAP = 6
+  const supplemented: Game[] = []
+  if (matched.length < SUPPLEMENT_CAP) {
     const { data: popular } = await supabase
       .from('games')
       .select(select)
       .order('like_count', { ascending: false })
-      .limit(limit)
-    const have = new Set(games.map((g) => g.id))
+      .limit(matched.length + SUPPLEMENT_CAP)
+    const have = new Set(matched.map((g) => g.id))
     for (const g of (popular ?? []).map(normalizeGame)) {
-      if (games.length >= limit) break
+      if (supplemented.length >= SUPPLEMENT_CAP) break
       if (!have.has(g.id)) {
-        games.push(g)
+        supplemented.push(g)
         have.add(g.id)
       }
     }
   }
-  return games
+  return { matched, supplemented }
 }
 
 export async function getRankedGames() {
