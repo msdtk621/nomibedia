@@ -42,11 +42,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const base = (game.description as string)?.trim()
   const metaDesc = (base ? `${base} ` : `${title}の遊び方を解説。`) + `${facts}。ルールと盛り上げ方を紹介します。`
   const desc = metaDesc.replace(/\s+/g, ' ').slice(0, 120)
+
+  // ルール本文が薄いページはインデックスさせない（AdSense審査・SEO品質対策）
+  const ruleSections = game.rule_sections as Array<{ text: string }> | null
+  const rulesText = ruleSections && ruleSections.length > 0
+    ? ruleSections.map((s) => s.text).join('')
+    : ((game.rules as string | null) ?? '')
+  const isThin = rulesText.trim().length < 40
+
   return {
     title: metaTitle,
     description: desc,
     openGraph: { title: metaTitle, description: desc, type: 'article' },
     twitter: { card: 'summary_large_image', title: metaTitle, description: desc },
+    ...(isThin ? { robots: { index: false, follow: true } } : {}),
   }
 }
 

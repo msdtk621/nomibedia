@@ -41,6 +41,7 @@ export default function PostForm({ categories }: { categories: Category[] }) {
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [validationError, setValidationError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const toggleArray = <T,>(arr: T[], val: T): T[] =>
@@ -80,7 +81,20 @@ export default function PostForm({ categories }: { categories: Category[] }) {
 
         <form
           action={postGame}
-          onSubmit={() => {
+          onSubmit={(e) => {
+            // 薄い投稿を防ぐための事前チェック（サーバー側と同じ条件）。
+            // ①ルール本文が20文字以上、②人数か必要なもののどちらかが入力されている。
+            const rulesText = ruleSections.map(s => s.text).join('').trim()
+            const requiredItemsValue = (new FormData(e.currentTarget).get('required_items') as string) ?? ''
+            const hasEnoughRules = rulesText.length >= 20
+            const hasDetails = playerCounts.length > 0 || requiredItemsValue.trim().length > 0
+            if (!hasEnoughRules || !hasDetails) {
+              e.preventDefault()
+              setValidationError('ルールは20文字以上入力し、人数か必要なもののどちらかを入力してください')
+              return
+            }
+            setValidationError(null)
+
             const ids = JSON.parse(localStorage.getItem('nomipedia_my_author_ids') || '[]')
             if (!ids.includes(authorId)) {
               localStorage.setItem('nomipedia_my_author_ids', JSON.stringify([...ids, authorId]))
@@ -349,6 +363,9 @@ export default function PostForm({ categories }: { categories: Category[] }) {
             </div>
           </section>
 
+          {validationError && (
+            <p className="text-sm text-red-600 text-center">{validationError}</p>
+          )}
           <div className="flex gap-3 pt-2">
             <SubmitButton idleLabel="投稿する" pendingLabel="投稿中…" className="flex-1" />
           </div>

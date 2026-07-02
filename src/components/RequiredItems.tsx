@@ -56,7 +56,6 @@ export default async function RequiredItems({ text }: { text: string }) {
     picks.map(async (k) => {
       const live = await searchRakutenProduct(k.searchKeyword ?? k.keyword, {
         revalidate: GOODS_REVALIDATE,
-        sort: '+itemPrice',
         hits: 20,
       })
       return live ? { keyword: k.keyword, amazonUrl: k.url, live } : null
@@ -84,7 +83,7 @@ export default async function RequiredItems({ text }: { text: string }) {
                 {c.live.price > 0 && (
                   <div className="mb-1.5">
                     <span className="text-sm font-bold text-gray-900">¥{c.live.price.toLocaleString()}</span>
-                    <span className="ml-1 text-[10px] text-gray-400">楽天最安値</span>
+                    <span className="ml-1 text-[10px] text-gray-400">楽天参考価格</span>
                   </div>
                 )}
                 <ShopButtons keyword={c.keyword} amazonUrl={c.amazonUrl} rakutenUrl={c.live.affiliateUrl} size="sm" />

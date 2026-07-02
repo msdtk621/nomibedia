@@ -4,6 +4,25 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/sup
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
+// 薄い投稿を防ぐための最低限のバリデーション（AdSense審査・SEO品質対策）。
+// ①ルール本文（rule_sectionsがあれば各textを連結、無ければrules）が20文字以上、
+// ②人数(player_count)か必要なもの(required_items)のどちらかが入力されている、の両方を満たす必要がある。
+function validateGameContent(
+  rules: string,
+  ruleSections: Array<{ text: string }> | null,
+  playerCount: string[],
+  requiredItems: string,
+) {
+  const rulesText = ruleSections && ruleSections.length > 0
+    ? ruleSections.map((s) => s.text).join('')
+    : rules
+  const hasEnoughRules = rulesText.trim().length >= 20
+  const hasDetails = playerCount.length > 0 || requiredItems.trim().length > 0
+  if (!hasEnoughRules || !hasDetails) {
+    throw new Error('ルールは20文字以上入力し、人数か必要なもののどちらかを入力してください')
+  }
+}
+
 export async function postGame(formData: FormData) {
   const supabase = await createServerSupabaseClient()
 
@@ -53,6 +72,8 @@ export async function postGame(formData: FormData) {
       }
     }
   }
+
+  validateGameContent(rules, ruleSections, playerCount, requiredItems)
 
   const { data: game, error } = await supabase.from('games').insert({
     title,
@@ -170,6 +191,8 @@ export async function updateGame(gameId: string, authorId: string, formData: For
       }
     }
   }
+
+  validateGameContent(rules, ruleSections, playerCount, requiredItems)
 
   await admin.from('games').update({
     title,

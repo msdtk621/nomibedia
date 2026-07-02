@@ -12,6 +12,7 @@ export default function Footer() {
             <span className="font-medium text-gray-700">ノミベディア</span>
           </div>
           <div className="flex items-center gap-4">
+            <Link href="/about" className="hover:text-blue-600">このサイトについて</Link>
             <Link href="/privacy" className="hover:text-blue-600">プライバシーポリシー</Link>
             <Link href="/terms" className="hover:text-blue-600">利用規約</Link>
             <Link href="/contact" className="hover:text-blue-600">お問い合わせ</Link>
