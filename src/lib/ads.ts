@@ -7,11 +7,12 @@
 
 export const ADSENSE_CLIENT = 'ca-pub-8713761965517511'
 
-// 配置ごとの広告ユニット slot ID（AdSense管理画面で発行 → 環境変数へ）
+// 配置ごとの広告ユニット slot ID（AdSense管理画面の発行済みユニット 2026-06-29 作成）。
+// slot ID は HTML に出る公開値のため、CLIENT 同様ここで中央管理する（環境変数で上書き可）。
 export const adSlots = {
-  article: process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE ?? '', // ゲーム詳細の記事内
-  feed: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FEED ?? '', // 一覧フィード内
-  sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? '', // サイドバー
+  article: process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE ?? '6326256265', // ゲーム詳細の記事内 = nomibedia-article
+  feed: process.env.NEXT_PUBLIC_ADSENSE_SLOT_FEED ?? '9543025083', // 一覧フィード内 = nomibedia-feed
+  sidebar: process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? '3878232497', // サイドバー = nomibedia-sidebar
 } as const
 
 export type AdSlot = keyof typeof adSlots
