@@ -13,9 +13,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const bg = await getBoardGame(id)
   if (!bg) return {}
+
+  // 説明文が薄いページはインデックスさせない（AdSense審査・SEO品質対策）
+  // ボドゲ詳細は「名前＋短い説明＋購入リンク」中心で薄いアフィリエイトページになりがちなため、
+  // 内容が薄いものはインデックスから外してサイト全体の品質シグナルを上げる。
+  const isThin = (bg.description ?? '').trim().length < 50
+
   return {
     title: `${bg.name} | 飲み屋おすすめボードゲーム | ノミベディア`,
     description: bg.description ?? `${bg.name}の紹介ページ`,
+    ...(isThin ? { robots: { index: false, follow: true } } : {}),
   }
 }
 

@@ -21,6 +21,10 @@ export default async function BoardGamesPage() {
           </div>
         </div>
 
+        <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+          飲み屋・宅飲み・待ち時間に遊べるボードゲームを、みんなの投票でランキング化しています。少人数でもルールが簡単で、短時間で決着がつく、飲みの席と相性の良い定番タイトルを中心に紹介しています。気になるゲームに投票して、みんなのおすすめを一緒に育てていきましょう。
+        </p>
+
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-700">
           👍 気になるゲームに投票できます。1つのゲームに何度でも投票・取り消しが可能です。
         </div>
