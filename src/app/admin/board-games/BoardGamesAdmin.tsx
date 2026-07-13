@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { addBoardGame, deleteBoardGame, deleteBoardGameRequest, updateBoardGameAffiliate, fetchRakutenForBoardGame } from '@/app/actions/boardgame'
+import { addBoardGame, deleteBoardGame, deleteBoardGameRequest, updateBoardGameAffiliate, updateBoardGameInfo, fetchRakutenForBoardGame } from '@/app/actions/boardgame'
 
 type BoardGame = {
   id: string; name: string; description: string | null; vote_count: number
@@ -17,6 +17,8 @@ export default function BoardGamesAdmin({
   // 既存ボドゲのアフィリンク編集
   const [editId, setEditId] = useState<string | null>(null)
   const [editForm, setEditForm] = useState({ amazon: '', rakuten: '' })
+  // 既存ボドゲの名前・説明編集
+  const [infoForm, setInfoForm] = useState({ name: '', description: '' })
   // 楽天自動取得用のキーワードと結果メッセージ
   const [rakutenKeyword, setRakutenKeyword] = useState('')
   const [rakutenMsg, setRakutenMsg] = useState('')
@@ -24,11 +26,16 @@ export default function BoardGamesAdmin({
   const startEdit = (g: BoardGame) => {
     setEditId(g.id)
     setEditForm({ amazon: g.affiliate_amazon ?? '', rakuten: g.affiliate_rakuten ?? '' })
+    setInfoForm({ name: g.name, description: g.description ?? '' })
     setRakutenKeyword(`${g.name} ボードゲーム`)
     setRakutenMsg('')
   }
   const handleUpdate = (id: string) => startTransition(async () => {
     await updateBoardGameAffiliate(adminKey, id, editForm)
+    setEditId(null)
+  })
+  const handleUpdateInfo = (id: string) => startTransition(async () => {
+    await updateBoardGameInfo(adminKey, id, infoForm)
     setEditId(null)
   })
   const handleFetchRakuten = (id: string) => startTransition(async () => {
@@ -98,6 +105,20 @@ export default function BoardGamesAdmin({
 
               {editId === g.id && (
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
+                  {/* 名前・説明の編集 */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 space-y-2">
+                    <div className="text-xs font-bold text-gray-600">名前・説明を編集</div>
+                    <input className={input} placeholder="名前" value={infoForm.name}
+                      onChange={e => setInfoForm({ ...infoForm, name: e.target.value })} />
+                    <textarea className={`${input} resize-none`} rows={4} placeholder="説明"
+                      value={infoForm.description} onChange={e => setInfoForm({ ...infoForm, description: e.target.value })} />
+                    <div className="flex justify-end">
+                      <button onClick={() => handleUpdateInfo(g.id)} disabled={isPending || !infoForm.name.trim()}
+                        className="px-4 py-1.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                        {isPending ? '保存中…' : '情報を保存'}
+                      </button>
+                    </div>
+                  </div>
                   {/* 楽天から画像・リンクを自動取得 */}
                   <div className="bg-red-50 border border-red-100 rounded-lg p-2 space-y-2">
                     <div className="text-xs font-bold text-[#BF0000]">楽天から画像・リンクを自動取得</div>

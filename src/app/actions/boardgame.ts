@@ -154,6 +154,19 @@ export async function updateBoardGameAffiliate(key: string, id: string, input: {
   revalidatePath('/admin/board-games')
 }
 
+// 管理者：既存ボドゲの名前・説明を更新（投票・アフィ設定は保持）
+export async function updateBoardGameInfo(key: string, id: string, input: { name: string; description: string }) {
+  verifyAdmin(key)
+  const admin = createAdminSupabaseClient()
+  await admin.from('board_games').update({
+    name: input.name.trim().slice(0, 100),
+    description: input.description.trim().slice(0, 1000) || null,
+  }).eq('id', id)
+  revalidatePath('/board-games')
+  revalidatePath(`/board-games/${id}`)
+  revalidatePath('/admin/board-games')
+}
+
 // 管理者：楽天APIで商品を検索し、トプ画(image_url)と楽天アフィリンクを自動設定
 export async function fetchRakutenForBoardGame(key: string, id: string, keyword: string) {
   verifyAdmin(key)

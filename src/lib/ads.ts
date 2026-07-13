@@ -19,3 +19,6 @@ export type AdSlot = keyof typeof adSlots
 
 // 各枠が有効か（slot ID が入っていれば true）
 export const hasAd = (slot: AdSlot) => adSlots[slot].length > 0
+
+// AdSense審査承認までは広告ユニットを非表示にする（空枠が審査に不利なため）。承認後に Netlify で NEXT_PUBLIC_ADS_ENABLED=true を設定して有効化する。
+export const ADS_ENABLED = process.env.NEXT_PUBLIC_ADS_ENABLED === 'true'

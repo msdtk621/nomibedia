@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { ADSENSE_CLIENT, adSlots, type AdSlot } from '@/lib/ads'
+import { ADSENSE_CLIENT, adSlots, ADS_ENABLED, type AdSlot } from '@/lib/ads'
 
 // Google AdSense 広告ユニット。
 // ・slot ID が未設定なら何も描画しない（空枠・レイアウト崩れを出さない＝アフィリ枠と同じ方針）。
@@ -20,7 +20,7 @@ export default function AdUnit({
   const pushed = useRef(false)
 
   useEffect(() => {
-    if (!slotId || pushed.current) return
+    if (!ADS_ENABLED || !slotId || pushed.current) return
     try {
       const w = window as unknown as { adsbygoogle?: Record<string, unknown>[] }
       w.adsbygoogle = w.adsbygoogle || []
@@ -31,7 +31,7 @@ export default function AdUnit({
     }
   }, [slotId])
 
-  if (!slotId) return null
+  if (!ADS_ENABLED || !slotId) return null
 
   return (
     <div className={`my-4 ${className}`} aria-label="広告" style={{ minHeight: minHeight + 18 }}>
