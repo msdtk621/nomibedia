@@ -80,6 +80,22 @@ export default async function ListPage({ params }: { params: Promise<{ slug: str
           <p className="text-gray-700 leading-relaxed">{list.howToChoose}</p>
         </div>
 
+        {/* 運営が書いた本文。UGCのゲーム一覧に対して、ここがサイトの独自コンテンツになる */}
+        {list.sections && list.sections.length > 0 && (
+          <article className="bg-white border border-gray-200 rounded-xl p-5 md:p-6 mb-6 space-y-6">
+            {list.sections.map((sec, i) => (
+              <section key={i}>
+                <h2 className="font-bold text-gray-900 mb-2">{sec.h}</h2>
+                <div className="space-y-3">
+                  {sec.body.map((p, j) => (
+                    <p key={j} className="text-gray-700 leading-relaxed">{p}</p>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </article>
+        )}
+
         {/* 他の目的別リストへの内部リンク */}
         <div className="mb-6">
           <p className="text-xs text-gray-400 mb-2">ほかの目的から探す</p>
