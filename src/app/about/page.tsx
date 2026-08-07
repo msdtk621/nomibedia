@@ -35,6 +35,20 @@ export default function AboutPage() {
         </section>
 
         <section>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">運営者情報</h2>
+          <dl className="grid grid-cols-[6rem_1fr] gap-y-2 text-sm">
+            <dt className="font-medium text-gray-900">サイト名</dt>
+            <dd>ノミベディア（nomibedia.com）</dd>
+            <dt className="font-medium text-gray-900">運営</dt>
+            <dd>Code &amp; Chord</dd>
+            <dt className="font-medium text-gray-900">連絡先</dt>
+            <dd>info@code-and-chord.com</dd>
+            <dt className="font-medium text-gray-900">運営開始</dt>
+            <dd>2026年6月</dd>
+          </dl>
+        </section>
+
+        <section>
           <h2 className="text-lg font-bold text-gray-900 mb-2">お問い合わせ</h2>
           <p>コンテンツに関するご報告やサイトへのご意見・ご要望は、<Link href="/contact" className="text-blue-600 hover:underline">お問い合わせページ</Link>からご連絡ください。</p>
         </section>
