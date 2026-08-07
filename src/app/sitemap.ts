@@ -3,6 +3,7 @@ import { MetadataRoute } from 'next'
 import { SITE_URL } from '@/lib/site'
 import { scenes } from '@/lib/scenes'
 import { gameLists } from '@/lib/lists'
+import { triviaList } from '@/lib/trivia'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE_URL
@@ -44,8 +45,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  const triviaUrls = triviaList.map(t => ({
+    url: `${base}/trivia/${t.slug}`,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
   return [
     { url: base, changeFrequency: 'daily', priority: 1.0 },
+    { url: `${base}/trivia`, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${base}/ranking`, changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/new`, changeFrequency: 'daily', priority: 0.8 },
     { url: `${base}/board-games`, changeFrequency: 'daily', priority: 0.7 },
@@ -54,6 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/contact`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/terms`, changeFrequency: 'yearly', priority: 0.3 },
+    ...triviaUrls,
     ...sceneUrls,
     ...listUrls,
     ...categoryUrls,

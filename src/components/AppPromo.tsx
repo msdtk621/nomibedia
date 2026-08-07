@@ -25,11 +25,12 @@ const apps: PromoApp[] = [
   },
 ]
 
+// 投稿一覧の隙間に差し込んで使う。外側の余白は親（space-y-3）に任せる。
 export default function AppPromo() {
   return (
-    <section className="mb-8">
+    <section>
       <div className="flex items-center gap-2 mb-3">
-        <h2 className="text-xl font-bold text-gray-900">ぬっこ様のアプリ</h2>
+        <h2 className="text-lg font-bold text-gray-900">ぬっこ様のアプリ</h2>
         <span className="text-[10px] font-bold text-amber-600 bg-amber-100 rounded-full px-2 py-0.5">PR</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

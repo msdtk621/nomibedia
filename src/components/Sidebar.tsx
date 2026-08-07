@@ -15,6 +15,9 @@ const navItems = [
   { href: '/favorites', label: 'お気に入り', img: '/star-orange.png' },
 ]
 
+// 画像アイコンを持たない項目は絵文字で出す
+const textNavItems = [{ href: '/trivia', label: 'お酒のあれこれ', emoji: '🍷' }]
+
 type Notice = { id: string; content: string; created_at: string }
 
 export default function Sidebar({ categories, notices = [], onNavigate }: { categories: Category[]; notices?: Notice[]; onNavigate?: () => void }) {
@@ -36,6 +39,21 @@ export default function Sidebar({ categories, notices = [], onNavigate }: { cate
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={asset(item.img)} alt={item.label} className="w-5 h-5 rounded object-cover" />
+            {item.label}
+          </Link>
+        ))}
+        {textNavItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-1 text-sm font-medium transition-colors ${
+              pathname === item.href
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <span className="w-5 h-5 flex items-center justify-center text-sm">{item.emoji}</span>
             {item.label}
           </Link>
         ))}

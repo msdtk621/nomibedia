@@ -21,11 +21,22 @@ export async function getNotices() {
   return (data ?? []) as Array<{ id: string; content: string; created_at: string }>
 }
 
-export async function getGames({ categorySlug, tag, q }: { categorySlug?: string; tag?: string; q?: string } = {}) {
+export type GamesQuery = {
+  categorySlug?: string
+  tag?: string
+  q?: string
+  /** 1始まり。perPage と合わせて指定したときだけページングする */
+  page?: number
+  perPage?: number
+}
+
+// 一覧取得の実体。件数は count:'exact' で同じクエリからまとめて受け取るので、
+// ページネーションのために総件数を別クエリで数え直す必要はない。
+async function queryGames({ categorySlug, tag, q, page, perPage }: GamesQuery) {
   const supabase = createPublicSupabaseClient()
   let query = supabase
     .from('games')
-    .select(`*, category:categories(*), game_tags(tag:tags(*))`)
+    .select(`*, category:categories(*), game_tags(tag:tags(*))`, { count: 'exact' })
     .order('created_at', { ascending: false })
 
   if (categorySlug && categorySlug !== 'all') {
@@ -47,8 +58,23 @@ export async function getGames({ categorySlug, tag, q }: { categorySlug?: string
     query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%`)
   }
 
-  const { data } = await query
-  return (data ?? []).map(normalizeGame)
+  if (page && perPage) {
+    const from = (page - 1) * perPage
+    query = query.range(from, from + perPage - 1)
+  }
+
+  const { data, count } = await query
+  return { games: (data ?? []).map(normalizeGame), total: count ?? 0 }
+}
+
+export async function getGames(opts: GamesQuery = {}) {
+  const { games } = await queryGames(opts)
+  return games
+}
+
+/** ページネーション用。1ページ分のゲームと、絞り込み後の総件数を返す */
+export async function getGamesWithCount(opts: GamesQuery = {}) {
+  return queryGames(opts)
 }
 
 export async function getGamesByIds(ids: string[]) {
