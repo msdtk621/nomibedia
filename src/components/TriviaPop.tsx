@@ -39,7 +39,7 @@ export default function TriviaPop({ trivia }: { trivia: Trivia }) {
             {meta.emoji}
           </span>
           <span className="font-bold text-amber-600 text-[11px] lg:text-sm leading-tight">
-            {meta.label}の豆知識
+            {meta.label}
           </span>
         </div>
 
@@ -75,7 +75,7 @@ export default function TriviaPop({ trivia }: { trivia: Trivia }) {
                 {meta.emoji}
               </span>
               <span className="font-bold text-amber-500 text-lg leading-8">
-                {meta.label}の豆知識
+                {meta.label}
               </span>
               <button
                 type="button"

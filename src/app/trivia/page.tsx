@@ -17,7 +17,7 @@ export const metadata = {
   twitter: { card: 'summary_large_image' as const, title, description },
 }
 
-const order: TriviaCategory[] = ['drink', 'food', 'manner']
+const order: TriviaCategory[] = ['drink', 'type', 'howto', 'food', 'manner']
 
 export default function TriviaIndexPage() {
   const jsonLd = {

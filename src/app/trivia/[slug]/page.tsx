@@ -77,7 +77,7 @@ export default async function TriviaDetailPage({ params }: { params: Promise<{ s
             <span className="w-7 h-7 rounded-full bg-amber-400 text-white flex items-center justify-center text-sm shrink-0">
               {meta.emoji}
             </span>
-            <span className="font-bold text-amber-500">{meta.label}の豆知識</span>
+            <span className="font-bold text-amber-500">{meta.label}</span>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-relaxed">
