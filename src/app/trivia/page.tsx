@@ -5,9 +5,9 @@ import { SITE_URL } from '@/lib/site'
 
 export const revalidate = 3600
 
-const title = 'お酒のあれこれ | お酒・おつまみ・飲みの場のマナー - ノミベディア'
+const title = 'お酒のあれこれ | お酒の種類・飲み方・幹事のコツ・マナー - ノミベディア'
 const description =
-  'お酒やおつまみの豆知識、飲みの場のマナーを短くまとめました。空腹での飲酒、ちゃんぽん、乾杯の作法、上座下座など、知っておくと飲み会がもっと楽しくなる話を集めています。'
+  'お酒の種類やおすすめの飲み方、おつまみ、飲みの場のマナー、幹事の段取り、家飲みのコツまで短くまとめました。空腹での飲酒、ちゃんぽん、日本酒の温度、店選び、ノンアルの選び方など、知っておくと飲み会がもっと楽しくなる話を集めています。'
 
 export const metadata = {
   title,
@@ -17,7 +17,18 @@ export const metadata = {
   twitter: { card: 'summary_large_image' as const, title, description },
 }
 
-const order: TriviaCategory[] = ['drink', 'type', 'howto', 'food', 'manner']
+const order: TriviaCategory[] = [
+  'drink',
+  'type',
+  'howto',
+  'food',
+  'manner',
+  'party',
+  'home',
+  'nonalc',
+  'world',
+  'history',
+]
 
 export default function TriviaIndexPage() {
   const jsonLd = {
