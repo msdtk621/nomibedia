@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { categoryImages } from '@/lib/categoryImages'
 import { asset } from '@/lib/asset'
+import { scenes } from '@/lib/scenes'
+import { gameLists } from '@/lib/lists'
 
 type Category = { id: string; name: string; slug: string; icon: string }
 
@@ -79,6 +81,44 @@ export default function Sidebar({ categories, notices = [], onNavigate }: { cate
               <span>{cat.icon}</span>
             )}
             {cat.name}
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-4 px-3">
+        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-3">シーンから探す</div>
+        {scenes.map((s) => (
+          <Link
+            key={s.slug}
+            href={`/scene/${s.slug}`}
+            onClick={onNavigate}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-1 text-sm transition-colors ${
+              pathname === `/scene/${s.slug}`
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <span className="w-5 h-5 flex items-center justify-center text-sm">{s.emoji}</span>
+            {s.name}
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-4 px-3">
+        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 px-3">目的から探す</div>
+        {gameLists.map((l) => (
+          <Link
+            key={l.slug}
+            href={`/list/${l.slug}`}
+            onClick={onNavigate}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-1 text-sm transition-colors ${
+              pathname === `/list/${l.slug}`
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <span className="w-5 h-5 flex items-center justify-center text-sm">{l.emoji}</span>
+            {l.name}
           </Link>
         ))}
       </div>
